@@ -37,6 +37,7 @@ namespace Com.ETMFS.DataFramework.Entities
                 .WithOptional(e => e.T_UserGroups)
                 .HasForeignKey(e => e.GroupId);
 
+
             modelBuilder.Entity<UserGroups>()
                 .HasMany(e => e.Users)
                 .WithOptional(e => e.UserGroups)
