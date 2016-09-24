@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.ETMFS.Web", "Com.ETMFS\Com.ETMFS.Web.csproj", "{9B7DB9AC-3C4C-466D-BCCF-6F385A5D1DF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.ETMFS.DataFramework", "Com.ETMFS.DataFramework\Com.ETMFS.DataFramework.csproj", "{D9A52CD0-B2DD-43F5-89FC-025196035A41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.ETMFS.Service.Permission", "Com.ETMFS.BusinesService\Com.ETMFS.Service.Permission.csproj", "{85F1D88C-CBF0-4FE9-809E-C6F6DA8980B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.ETMFS.Service.Core", "Com.ETMFS.Service.Core\Com.ETMFS.Service.Core.csproj", "{9F63A713-B0D3-4541-BA21-E148FCF6F177}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Com.ETMFS.Service.Common", "Com.ETMFS.Service.Common\Com.ETMFS.Service.Common.csproj", "{83C7B139-1E6A-4366-8080-1F2C13AF4AD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETMFDemo", "ETMFDemo\ETMFDemo.csproj", "{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B7DB9AC-3C4C-466D-BCCF-6F385A5D1DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B7DB9AC-3C4C-466D-BCCF-6F385A5D1DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B7DB9AC-3C4C-466D-BCCF-6F385A5D1DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B7DB9AC-3C4C-466D-BCCF-6F385A5D1DF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9A52CD0-B2DD-43F5-89FC-025196035A41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9A52CD0-B2DD-43F5-89FC-025196035A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9A52CD0-B2DD-43F5-89FC-025196035A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9A52CD0-B2DD-43F5-89FC-025196035A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85F1D88C-CBF0-4FE9-809E-C6F6DA8980B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85F1D88C-CBF0-4FE9-809E-C6F6DA8980B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85F1D88C-CBF0-4FE9-809E-C6F6DA8980B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85F1D88C-CBF0-4FE9-809E-C6F6DA8980B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F63A713-B0D3-4541-BA21-E148FCF6F177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F63A713-B0D3-4541-BA21-E148FCF6F177}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F63A713-B0D3-4541-BA21-E148FCF6F177}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F63A713-B0D3-4541-BA21-E148FCF6F177}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83C7B139-1E6A-4366-8080-1F2C13AF4AD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83C7B139-1E6A-4366-8080-1F2C13AF4AD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83C7B139-1E6A-4366-8080-1F2C13AF4AD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83C7B139-1E6A-4366-8080-1F2C13AF4AD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
