@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+@Scripts.Render("~/bundles/AppConfigSettingjs")
+<script type="text/javascript" language="javascript">
+    var data = {}
+    $(document.body).ready(function(){
+        var configcontrol=new configController();
+        configcontrol.Load(data);
+    });
+</script>
+
+<div id="configpanel">
+
+    <form id="cofigform" method="post">
+        <table>
+            <tr>
+                <td>
+                    <label class="textbox-label">PathURI</label>
+                </td>
+                <td>
+                    <input type="text" class="easyui-textbox" name="PathURI"
+                           id="PathURI" data-options="required:true" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="textbox-label">Root Folder</label>
+                </td>
+                <td>
+                    <input type="text" class="easyui-textbox" name="RootFolder"
+                           id="RootFolder" data-options="required:true" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="textbox-label">Host Type</label>
+                </td>
+                <td>
+                    <select class="combobox" panelheight="auto" name="HostType"
+                            id="HostType" data-options="required:true" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="textbox-label">User Id</label>
+                </td>
+                <td>
+                    <input type="text" class="easyui-textbox" name="UserId"
+                           id="UserId" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="textbox-label">Password</label>
+                </td>
+                <td>
+                    <input type="text" class="easyui-textbox" name="Password" id="Password" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="textbox-label">Domain</label>
+                </td>
+                <td>
+                    <input type="text" class="easyui-textbox" name="Domain"
+                           id="Domain" />
+                </td>
+            </tr>
+            <tr>
+                <td><button type="button" class="loginbutton" onclick="configController.Save()">Save</button></td>
+                <td>
+                    <button type="button" class="loginbutton" onclick="configController.MappingFolders()">Mapping Folders</button>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+
+   
+</div>
+
+<div id="tt">
+    <a href="#" class="icon-add" onclick="javascript:alert('add')"></a>
+    <a href="#" class="icon-edit" onclick="javascript:alert('edit')"></a>
+</div>

@@ -1,0 +1,268 @@
+﻿@{
+    ViewBag.Title = "TMF Model";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/TMFModeljs")
+<script>
+    $("document").ready(function () {
+        com.TMFModelController().Load();
+    });
+
+</script>
+
+<div title="DataGrid" style="padding:5px">
+    <table id="list_data">
+        <thead>
+            <tr>
+
+                <th data-options="field:'Id'" width="80">Item ID</th>
+                <th data-options="field:'ZoneNo'" width="100">ZoneNo</th>
+                <th data-options="field:'ZoneName'" width=" 100">ZoneName</th>
+                <th data-options="field:'SectionNo'" width=" 100">SectionNo</th>
+                <th data-options="field:'SectionName'" width=" 100">SectionName</th>
+                <th data-options="field:'ArtifactNo'" width=" 100">ArtifactNo</th>
+                <th data-options="field:'ArtifactName'" width=" 100">ArtifactName</th>
+                <th data-options="field:'AlternateNames'" width=" 100">AlternateNames</th>
+                <th data-options="field:'Purpose'" width="300">Purpose</th>
+                <th data-options="field:'SubArtifacts'" width="100">SubArtifacts</th>
+                <th data-options="field:'Inclusion'" width=" 100">Inclusion</th>
+                <th data-options="field:'ICHCode'" width=" 100">ICHCode</th>
+                <th data-options="field:'EDMName'" width=" 100">EDMName</th>
+                <th data-options="field:'UniqueID'" width=" 100">UniqueID</th>
+                <th data-options="field:'DeviceSponsorRequired'" width=" 100">Device Sponsor Required</th>
+                <th data-options="field:'DeviceInvestRequired'" width=" 100">Device Investigator  Required</th>
+                <th data-options="field:'NonDeviceSponsorRequired'" width=" 100">Non-Device Sponsor Required</th>
+                <th data-options="field:'NonDeviceInvestRequired'" width=" 100">Non-Device Investigator Required</th>
+                <th data-options="field:'InvestigatorInitated'" width=" 100">InvestigatorInitated</th>
+                <th data-options="field:'IsBaseMetaData'" width=" 100">IsBaseMetaData</th>
+                <th data-options="field:'ProcessNumber'" width=" 100">ProcessNumber</th>
+                <th data-options="field:'ProcessName'" width=" 100">ProcessName</th>
+                <th data-options="field:'IsTrialLevel'" width=" 100">IsTrialLevel</th>
+                <th data-options="field:'IsCountryLevel'" width=" 100">IsCountryLevel</th>
+                <th data-options="field:'IsSiteLevel'" width=" 100">IsSiteLevel</th>
+
+                <th data-options="field:'Active'" width=" 100">Active</th>
+                <th data-options="field:'Created',formatter:com.common.formatdate" width=" 100">Created</th>
+                <th data-options="field:'CreateBy'" width=" 100">CreateBy</th>
+                <th data-options="field:'Modified' ,formatter:com.common.formatdate" width=" 100">Modified</th>
+                <th data-options="field:'ModifiBy'" width=" 100">ModifiBy</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div id="file_upload" class="common-dialog" data-options="iconCls:'icon-save'">
+    <form id="tmffile" method="post" enctype="multipart/form-data">
+        <table class="dialog-content">
+            <tr>
+                <td>
+                    <label class="textbox-label"> TMF Model Reference File</label>
+                </td>
+                <td>
+                    <input type="file" name="file" />
+                </td>
+            </tr>
+            </table>
+</form>
+    </div>
+        <div id="add_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+            <form id="userform" method="post">
+                <input type="hidden" name="Id" id="Id" />
+                <input type="hidden" name="Active" />
+                <table class="dialog-content">
+                    <tr>
+                        <td>
+                            <label class="textbox-label"> ZoneNo</label>
+                        </td>
+                        <td>
+                            <input type="text" name="ZoneNo" id="ZoneNo" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ZoneName</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ZoneName" name="ZoneName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">SectionNo</label>
+                        </td>
+                        <td>
+                            <input type="text" id="SectionNo" name="SectionNo" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">SectionName</label>
+                        </td>
+                        <td>
+                            <input type="text" id="SectionName" name="SectionName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ArtifactNo</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ArtifactNo" name="ArtifactNo" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ArtifactName</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ArtifactName" name="ArtifactName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">AccountableParty</label>
+                        </td>
+                        <td>
+                            <textarea type="text" id="AccountableParty" name="AccountableParty" ></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Purpose</label>
+                        </td>
+                        <td>
+                            <textarea  id="Purpose" name="Purpose" ></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Inclusion</label>
+                        </td>
+                        <td>
+                            <input type="text" id="Inclusion" name="Inclusion" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ICHCode</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ICHCode" name="ICHCode" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">EDMName</label>
+                        </td>
+                        <td>
+                            <input type="text" id="EDMName" name="EDMName" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">UniqueID</label>
+                        </td>
+                        <td>
+                            <input type="text" id="UniqueID" name="UniqueID" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Device Sponsor Required</label>
+                        </td>
+                        <td>
+                            <input type="text" id="DeviceSponsorRequired" name="DeviceSponsorRequired" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Device Investigator Required</label>
+                        </td>
+                        <td>
+                            <input type="text" id="DeviceInvestRequired" name="DeviceInvestRequired" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Non Device Sponsor Required</label>
+                        </td>
+                        <td>
+                            <input type="text" id="NonDeviceSponsorRequired" name="NonDeviceSponsorRequired" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Non Device Investigator Required</label>
+                        </td>
+                        <td>
+                            <input type="text" id="NonDeviceInvestRequired" name="NonDeviceInvestRequired" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">InvestigatorInitated</label>
+                        </td>
+                        <td>
+                            <input type="text" id="InvestigatorInitated" name="InvestigatorInitated" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">IsBaseMetaData</label>
+                        </td>
+                        <td>
+                            <input type="text" id="IsBaseMetaData" name="IsBaseMetaData" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ProcessNumber</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ProcessNumber" name="ProcessNumber" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">ProcessName</label>
+                        </td>
+                        <td>
+                            <input type="text" id="ProcessName" name="ProcessName" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">IsTrialLevel</label>
+                        </td>
+                        <td>
+                            <input type="text" id="IsTrialLevel" name="IsTrialLevel" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">IsCountryLevel</label>
+                        </td>
+                        <td>
+                            <input type="text" id="IsCountryLevel" name="IsCountryLevel" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">IsSiteLevel</label>
+                        </td>
+                        <td>
+                            <input type="text" id="IsSiteLevel" name="IsSiteLevel" />
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+
+        </div>
+

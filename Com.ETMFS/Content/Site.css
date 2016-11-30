@@ -1,24 +1,44 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.loginpanel{
+    
+    width:500px!important;
+        margin-top: 200px;
+    margin-left: 550px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+.loginlabel{
+    padding-left:20px
+}
+.loginitem{
+    margin-top:20px
+}
+.loginbuttons{
+    padding-left:50px;
+    padding-right:50px
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.loginbutton{
+    padding-left:20px;
+    padding-right:20px;
+    background-color:lightblue;
+    color:white;
+    margin-right:10px;
+    border-radius:5px;
+     margin-bottom:20px;
+     height:30px
 }
+
+ .common-dialog{
+         width:400px;
+         height:400px;
+         padding:10px;
+         display:none
+    }
+ .textbox , .combobox{
+     min-width:200px;
+     height:20px;
+ }
+
+ 

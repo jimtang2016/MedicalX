@@ -1,0 +1,83 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/groupjs")        
+<script type="text/javascript">
+    var controller = com.GroupController();
+    controller.Load();
+</script>
+<div>
+
+    <div title="DataGrid" style="padding:5px">
+        <table id="list_data">
+            <thead>
+                <tr>
+
+                    <th data-options="field:'Id'" width="80">Item ID</th>
+                    <th data-options="field:'GroupName'" width="100">Group Name</th>
+                    <th data-options="field:'Description',align:'right'" width="80">Description</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="add_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+        <form id="groupform" method="post">
+            <input type="hidden" name="Id" id="Id" />
+            <input type="hidden" name="Active" id="Active" />
+            <table class="dialog-content">
+                <tr>
+                    <td>
+                        <label class="textbox-label">Group Name</label>
+                    </td>
+                    <td>
+                        <input type="text" class="textbox" name="GroupName" id="GroupName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="textbox-label">Description</label>
+                    </td>
+                    <td>
+                        <textarea type="text" class="textbox" name="Description" id="Description"></textarea>
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+        <div title="DataGrid" style="padding:5px">
+            <table id="user_datas">
+                <thead>
+                    <tr>
+
+                        <th data-options="field:'Id'" width="80">Item ID</th>
+                        <th data-options="field:'UserName'" width="100">User Name</th>
+                        <th data-options="field:'Country',align:'right'" width="80">Country</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div id="search_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+        <div title="DataGrid" style="padding:5px">
+            <table id="searchuser_datas">
+                <thead>
+                    <tr>
+
+                        <th data-options="field:'Id'" width="80">Item ID</th>
+                        <th data-options="field:'UserName'" width="100">User Name</th>
+                        <th data-options="field:'Country',align:'right'" width="80">Country</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+

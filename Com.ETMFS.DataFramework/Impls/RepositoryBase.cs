@@ -141,7 +141,7 @@ namespace Com.ETMFS.DataFramework.Impls
 
         IEnumerable<T> IRepository<T>.GetAll()
         {
-            throw new NotImplementedException();
+          return  Dbset.ToList<T>();
         }
 
         public IEnumerable<T> GetMany(System.Linq.Expressions.Expression<Func<T, bool>> where)

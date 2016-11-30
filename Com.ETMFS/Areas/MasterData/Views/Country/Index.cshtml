@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/Countryjs")
+<script>
+    $("document").ready(function () {
+        com.CountryController().Load();
+    });
+   
+</script>
+<div>
+
+    <div title="DataGrid" style="padding:5px">
+        <table id="list_data">
+            <thead>
+                <tr>
+
+                    <th data-options="field:'Id'" width="80">Item ID</th>
+                    <th data-options="field:'CountryName'" width="100">Country Name</th>
+                    <th data-options="field:'CountryCode'" width=" 80">Country Code</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="add_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+        <form id="userform" method="post">
+            <input type="hidden" name="Id" id="Id" />
+            <input type="hidden" name="Active" />
+            <table class="dialog-content">
+                <tr>
+                    <td>
+                        <label class="textbox-label">Country Name</label>
+                    </td>
+                    <td>
+                        <input type="text" name="CountryName" id="CountryName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="textbox-label">Country Code</label>
+                    </td>
+                    <td>
+                        <input type="text" id="CountryCode" name="CountryCode" />
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    
+    </div>
+</div>
+ 
+

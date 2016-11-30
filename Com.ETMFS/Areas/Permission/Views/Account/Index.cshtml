@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/accountjs")
+              <script>
+                  var user = com.AccountController();
+                  user.init();
+              </script>
+</head>
+<body>
+    <div  >
+        <div class="panel loginpanel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <h2>e-Trial Master File</h2>
+                </div>
+                <div class="panel-tool"></div>
+            </div>
+      
+            <div class="panel-body ">
+                <div class="loginitem">
+                    <label class="textbox-label loginlabel">User Name</label>  <input class="easyui-textbox  " data-options="required:true" id="Username" prompt="Username" iconwidth="28">
+                </div>
+                <div class="loginitem">
+                    <label class="textbox-label loginlabel">Password</label> <input class="easyui-passwordbox" data-options="required:true" id="Password" prompt="Password" iconwidth="28">
+                </div>
+                <div class="loginitem loginbuttons">
+                <button class="textbox-button loginbutton" id="login"> Login </button><button class="textbox-button loginbutton"> Cancel </button>
+                </div>
+            </div>
+        </div>
+        </div>
+   
+</body>
+</html>

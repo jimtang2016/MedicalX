@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Com.ETMFS.App_Start;
+using Com.ETMFS.Service.Common;
 
 namespace Com.ETMFS
 {
@@ -16,6 +18,11 @@ namespace Com.ETMFS
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            UnityWebActivator.Start();
+            IdentityScope.Context.ConnectShareFolder(Server.MapPath(ConfigList.ConfigXMLPath));
         }
+
+       
+         
     }
 }

@@ -5,6 +5,7 @@ namespace Com.ETMFS.DataFramework.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
     using Com.ETMFS.DataFramework.Entities.Permission;
+    using Com.ETMFS.DataFramework.Entities.Core;
     public partial class ETMFContext : DbContext 
     {
         public ETMFContext()
@@ -19,14 +20,15 @@ namespace Com.ETMFS.DataFramework.Entities
         public virtual DbSet<OptionList> OptionList { get; set; }
         public virtual DbSet<UserGroups> UserGroups { get; set; }
         public virtual DbSet<Users> Users { get; set; }
-
+        public virtual DbSet<Country> Country { get; set; }
+        public virtual DbSet<TrialRegional> TrialRegional { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Company>()
                 .HasMany(e => e.Users)
                 .WithOptional(e => e.Company)
                 .HasForeignKey(e => e.CompanyId);
-
+          
             modelBuilder.Entity<Functions>()
                 .HasMany(e => e.FunctionGroup)
                 .WithOptional(e => e.Functions)
@@ -36,18 +38,45 @@ namespace Com.ETMFS.DataFramework.Entities
                 .HasMany(e => e.FunctionGroup)
                 .WithOptional(e => e.T_UserGroups)
                 .HasForeignKey(e => e.GroupId);
+          
+
+            modelBuilder.Entity<UserGroups>().HasMany(b => b.Users)
+    .WithMany(c => c.UserGroups).Map(o =>
+    {
+                o.MapLeftKey("GroupId");
+                o.MapRightKey("UserId");
+                o.ToTable("T_UserMapping");
+                
+                
+            });
 
 
-            modelBuilder.Entity<UserGroups>()
-                .HasMany(e => e.Users)
-                .WithOptional(e => e.UserGroups)
-                .HasForeignKey(e => e.UserGroupId);
-
+            
             modelBuilder.Entity<Users>()
                 .HasMany(e => e.LoginHistory)
                 .WithRequired(e => e.Users)
                 .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Study>().HasMany(o => o.TrialRegional).WithOptional(e => e.Study).HasForeignKey(e => e.StudyId);
+            modelBuilder.Entity<Country>().HasMany(o => o.TrialRegional).WithOptional(e => e.Country).HasForeignKey(e => e.CountryId);
+
+            modelBuilder.Entity<Study>().HasMany(o => o.StudySite).WithOptional(e => e.Study).HasForeignKey(e => e.StudyId);
+            modelBuilder.Entity<Site>().HasMany(o => o.StudySite).WithOptional(e => e.Site).HasForeignKey(e => e.SiteId);
+
+            modelBuilder.Entity<Study>().HasMany(o => o.StudyTemplate).WithRequired(e => e.Study).HasForeignKey(e => e.StudyId);
+            modelBuilder.Entity<TMFTemplate>().HasMany(o => o.StudyTemplate).WithRequired(e => e.TMFTemplate).HasForeignKey(e => e.TemplateId);
+
+            modelBuilder.Entity<Study>().HasMany(o => o.StudyMember).WithRequired(e => e.Study).HasForeignKey(e => e.StudyId);
+
+            modelBuilder.Entity<Users>().HasMany(o => o.StudyMember).WithRequired(e => e.User).HasForeignKey(e => e.MemberId);
+
+          
+
+            modelBuilder.Entity<StudyTemplate>().HasMany(o => o.StudyDocument).WithRequired(e => e.StudyTemplate).HasForeignKey(e => e.StudyTemplateId);
+
+            modelBuilder.Entity<StudyTemplate>().HasMany(o => o.TemplateOutcluding).WithRequired(e =>e.StudyTemplate).HasForeignKey(e => e.StudyTemplateId);
+
         }
     }
 }

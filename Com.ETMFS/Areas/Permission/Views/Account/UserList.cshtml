@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "UserList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Scripts.Render("~/bundles/accountjs")
+ 
+ <script type="text/javascript">
+     var user = com.AccountController();
+     user.LoadUsers();
+ </script>
+    <div>
+        
+    <div title="DataGrid" style="padding:5px">
+        <table id="list_data"  >
+            <thead>
+                <tr>  
+                    
+                    <th data-options="field:'Id'" width="80">Item ID</th>
+                    <th data-options="field:'UserName'" width="100">UserName</th>
+                    <th data-options="field:'Country',align:'right'" width="80">Country</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+        <div id="add_dialog" class="common-dialog"   data-options="iconCls:'icon-save'">
+               <form id="userform" method="post" >
+                   <input type="hidden" name="Id" />
+                     <input type="hidden" name="Active" />
+                   <table class="dialog-content">
+                       <tr>
+                           <td>
+                               <label  class="textbox-label">User Name</label>
+                           </td>
+                           <td>
+                               <input type="text" name="UserName" />
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               <label class="textbox-label">Password</label>
+                           </td>
+                           <td>
+                               <input type="text" name="PassWord" />
+                           </td>
+                       </tr>
+                   </table>
+
+               </form>
+            <div title="DataGrid" style="padding:5px">
+                <table id="grouplist_data"  >
+                    <thead>
+                        <tr>
+
+                            <th data-options="field:'Id'" width="80">Item ID</th>
+                            <th data-options="field:'GroupName'" width="100">Group Name</th>
+                            <th data-options="field:'Description' " width="100">Description</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+</div>
+

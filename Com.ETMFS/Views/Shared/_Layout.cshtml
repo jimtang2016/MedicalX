@@ -3,40 +3,59 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - e-Trial Master File Application</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
+    
+    <div class="easyui-layout" style="width:100%;min-height:600px;">
+        <div data-options="region:'north'" style="height:50px">
+                                                            <div  style="float:right;padding-top:10px;padding-right:10px"  >
+                                                                Welcome :@ViewBag.CurrentUser
+                                                                <a href="javascript:void(-1)" onclick="com.common.LogOff()">  Logoff        </a>
+                                                            </div>
+        </div>
+        
+      
+        <div data-options="region:'west',split:true" title="Navigation" style="width:200px;">
+            <div class="easyui-accordion" data-options="fit:true,border:false">
+                <div id="account" title="Permissions"  style="padding:10px;">
+                        <div class="menu-item" id="fun_users">
+                            <a class="menu-text" href="../../permission/account/userlist">Users</a>
+                        </div>
+                    <div class="menu-item" id="fun_groups">
+                        <a class="menu-text" href="../../permission/group">Groups</a>
+                    </div>
+                    <div class="menu-item" id="fun_Config">
+                        <a class="menu-text" href="../../permission/Config">App Config</a>
+                    </div>
+                    <div class="menu-item" id="fun_funs">
+                        <a class="menu-text">Functions</a>
+                    </div>
+                    
+                </div>
+                <div id="Masterdata" title="Master Data" style="padding:10px;">
+                    <div class="menu-item" id="fun_country">
+                        <a   class="menu-text" href="../../MasterData/Country/">Country</a>
+                    </div>
+                    <div class="menu-item" id="fun_tmfm">
+                        <a class="menu-text" href="../../MasterData/TMFModel/">TMF Model Refrence</a>
+                    </div>
+                   
+                </div>
+                <div id="Studymanage" title="Study Management" style="padding:10px">
+                    <div class="menu-item" id="fun_study">
+                        <a class="menu-text" href="../../MasterData/study/">Study</a>
+                    </div>
+                </div>
             </div>
         </div>
+        <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
+          @RenderBody()
+        </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+ 
 </body>
 </html>
