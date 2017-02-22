@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Com.ETMFS.BusinesService.Interfaces;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.Service.Core.Interfaces;
 using Com.ETMFS.Service.Core.ViewModel;
 
@@ -35,6 +36,47 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             var users = _studyContext.GetStudyList(page, rows);
             return Json(new { total = users.Total, rows = users.ResultRows });
         }
+
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetUserPermission(TMFFilter filter)
+        {
+            PermissionViewModel users = null;
+            if (CurUser.IsAdministrator)
+            {
+                users = new PermissionViewModel()
+                {
+                    IsOwner = true,
+                    IsUploader = true,
+                    IsReviewer = true
+                };
+            }
+            else
+            {
+                 users = _studyContext.GetPermission(filter, CurUser.Id);
+            }
+          
+           return Json(users);
+        }
+
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetUserStudyList()
+        {
+            try
+            {
+                var studylists = _studyContext.GetUserStudyList( CurUser.Id);
+                return Json(studylists);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, data = ex.Message });
+            }
+    
+        }
+
         [LoginFilter]
         [HttpPost]
         public JsonResult GetAllTemplates(int id, int page, int rows)
@@ -75,21 +117,19 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         [LoginFilter]
         [HttpPost]
-        public JsonResult GetTrialSites(int id)
+        public JsonResult GetTrialSites(int id,int? countryId)
         {
             try
             {
                 if (id > 0)
                 {
-                    var users = _studyContext.GetStudySites(id);
+                    var users = _studyContext.GetStudySites(id, countryId);
                     return Json(users);
                 }
                 else
                 {
                     return Json(string.Empty);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -106,7 +146,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             {
                 if (id > 0)
                 {
-                    var users = _studyContext.GetTrialRegionals(id);
+                    var users = _studyContext.GetTrialRegionals(id,CurUser.Id);
                     return Json(users);
                 }
                 else

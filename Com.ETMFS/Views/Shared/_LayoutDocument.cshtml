@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - e-Trial Master File Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/HighCharts")
+    <style>
+        .logo-filter{
+            width:120px;
+            height:40px
+        }
+        .logo-logoff{
+            float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+
+    
+
+        <div data-options="region:'west',split:true" style="width:310px;">
+            <div class="easyui-panel" style="width:300px;">
+                <div>
+                    <img src="~/Content/Images/logo.png" />
+                    <a href="javascript:void(-1)" class="logo-logoff" onclick="com.common.LogOff()">  Logoff        </a>
+                </div>
+                <div style="padding-left:10px">
+                    <table>
+
+                        <tr>
+                            <td><label class="logo-filter">*Trial</label></td>
+                            <td><select class="easyui-combobox" id="StudyList"></select></td>
+                        </tr>
+
+                        <tr>
+                            <td><label class="logo-filter">Country</label></td>
+                            <td><select class="easyui-combobox" id="CountryList"></select></td>
+                        </tr>
+                        <tr>
+                            <td><label class="logo-filter">Site</label> </td>
+                            <td><select class="easyui-combobox" id="SiteList"></select></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            <div class="easyui-panel" title="Quality" style="width:300px;">
+                <div id="chart_review" style="width:290px;height:200px"></div>
+            </div>
+            <div class="easyui-panel" title="Completeness" style="width:300px;">
+                <div id="chart_upload" style="width:290px;height:200px"></div>
+            </div>
+        </div>
+        <div data-options="region:'center' ">
+            @RenderBody()
+        </div>
+    
+
+</body>                                             
+</html>

@@ -111,7 +111,7 @@ namespace Com.ETMFS.Areas.Permission.Controllers
                 if (user.Id>0)
                 {
                     Session.Add("User", user);
-                    return Json(new { Result = true, Message = "Wellcome to onboard" });
+                    return Json(new { Result = true, Message = "Wellcome to onboard",IsAdministrator=user.IsAdministrator });
                 }
                 else
                 {

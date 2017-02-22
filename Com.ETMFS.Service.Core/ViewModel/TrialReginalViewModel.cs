@@ -13,6 +13,7 @@ namespace Com.ETMFS.Service.Core.ViewModel
        public int? StudyId { set; get; }
        public int? OwnerId { set; get; }
        public string CountryName { set; get; }
+       public string CountryCode { set; get; }
        public string OwnerName { set; get; }
        public int? MemberId { set; get; }
        public bool? Active { set; get; }

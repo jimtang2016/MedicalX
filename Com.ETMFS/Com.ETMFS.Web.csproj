@@ -158,6 +158,7 @@
     <Compile Include="Areas\LoginFilter.cs" />
     <Compile Include="Areas\MasterData\Controllers\CountryController.cs" />
     <Compile Include="Areas\MasterData\Controllers\StudyController.cs" />
+    <Compile Include="Areas\MasterData\Controllers\StudyDocumentController.cs" />
     <Compile Include="Areas\MasterData\Controllers\TMFModelController.cs" />
     <Compile Include="Areas\MasterData\MasterDataAreaRegistration.cs" />
     <Compile Include="Areas\Permission\Controllers\AccountController.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\logo.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
@@ -529,14 +531,19 @@
     <Content Include="Areas\Permission\Views\Account\Index.cshtml" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\easyloader.js" />
+    <Content Include="Scripts\highcharts-3d.js" />
+    <Content Include="Scripts\highcharts-more.js" />
+    <Content Include="Scripts\highcharts.js" />
     <Content Include="Scripts\jquery.easyui.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\MasterData\Country.js" />
+    <Content Include="Scripts\MasterData\DocumentController.js" />
     <Content Include="Scripts\MasterData\StudyController.js" />
     <Content Include="Scripts\MasterData\TMFModel.js" />
     <Content Include="Scripts\Permission\AccountJs.js" />
     <Content Include="Scripts\Permission\AppConfigSetting.js" />
     <Content Include="Scripts\Permission\Group.js" />
+    <Content Include="Setting\AppConfig.xml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -552,11 +559,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\MasterData\Models\" />
-    <Folder Include="Areas\MasterData\Views\Shared\" />
     <Folder Include="Areas\Permission\Models\" />
     <Folder Include="Areas\Permission\Views\Shared\" />
     <Folder Include="Models\" />
-    <Folder Include="Setting\" />
     <Folder Include="Upload\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
@@ -574,9 +579,13 @@
     <Content Include="Areas\MasterData\Views\TMFModel\Index.cshtml" />
     <Content Include="Areas\MasterData\Views\Study\Index.cshtml" />
     <Content Include="Areas\Permission\Views\Config\Index.cshtml" />
+    <Content Include="Areas\MasterData\Views\StudyDocument\Index.cshtml" />
+    <Content Include="Areas\MasterData\Views\Shared\_StudyPartialView.cshtml" />
     <None Include="Project_Readme.html" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\knockout-3.4.0.js" />
+    <Content Include="Views\Shared\_LayoutDocument.cshtml" />
+    <None Include="Properties\PublishProfiles\dd.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Com.ETMFS.BusinesService\Com.ETMFS.Service.Permission.csproj">

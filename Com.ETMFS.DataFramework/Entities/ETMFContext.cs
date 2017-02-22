@@ -6,6 +6,7 @@ namespace Com.ETMFS.DataFramework.Entities
     using System.Linq;
     using Com.ETMFS.DataFramework.Entities.Permission;
     using Com.ETMFS.DataFramework.Entities.Core;
+    using Com.ETMFS.DataFramework.Entities.History;
     public partial class ETMFContext : DbContext 
     {
         public ETMFContext()
@@ -14,6 +15,8 @@ namespace Com.ETMFS.DataFramework.Entities
         }
 
         public virtual DbSet<Company> Company { get; set; }
+        public virtual DbSet<IssueLog> IssueLog { get; set; }
+        public virtual DbSet<AssignedUser> AssignedUser { get; set; }
         public virtual DbSet<FunctionGroup> FunctionGroup { get; set; }
         public virtual DbSet<Functions> Functions { get; set; }
         public virtual DbSet<LoginHistory> LoginHistory { get; set; }
@@ -22,13 +25,22 @@ namespace Com.ETMFS.DataFramework.Entities
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<TrialRegional> TrialRegional { get; set; }
+
+        public virtual DbSet<StudyDocument> StudyDocument { get; set; }
+        public virtual DbSet<StudyDocumentHistory> StudyDocumentHistory { get; set; }
+        public virtual DbSet<DocumentView> DocumentView { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Company>()
                 .HasMany(e => e.Users)
                 .WithOptional(e => e.Company)
                 .HasForeignKey(e => e.CompanyId);
-          
+
+            modelBuilder.Entity<StudyDocument>()
+                .HasMany(e => e.StudyDocumentHistory)
+                .WithOptional(e => e.StudyDocument)
+                .HasForeignKey(e => e.DocumentId);
+
             modelBuilder.Entity<Functions>()
                 .HasMany(e => e.FunctionGroup)
                 .WithOptional(e => e.Functions)
@@ -38,7 +50,12 @@ namespace Com.ETMFS.DataFramework.Entities
                 .HasMany(e => e.FunctionGroup)
                 .WithOptional(e => e.T_UserGroups)
                 .HasForeignKey(e => e.GroupId);
-          
+
+            modelBuilder.Entity<IssueLog>().HasMany(o => o.AssignedUsers).WithOptional(o => o.IssueLog).HasForeignKey(o => o.AssignUserId);
+            modelBuilder.Entity<Users>().HasMany(o => o.AssignedUsers).WithOptional(o => o.AssignUser).HasForeignKey(o => o.AssignUserId);
+
+            modelBuilder.Entity<StudyDocument>().HasMany(o => o.IssueLogs).WithOptional(o => o.StudyDocument).HasForeignKey(o => o.DocumentId);
+            modelBuilder.Entity<Users>().HasMany(o => o.IssueLogs).WithOptional(o => o.Reviewer).HasForeignKey(o=>o.ReviewerId);
 
             modelBuilder.Entity<UserGroups>().HasMany(b => b.Users)
     .WithMany(c => c.UserGroups).Map(o =>

@@ -25,7 +25,8 @@ namespace Com.ETMFS.BusinesService.ViewModel.Permission
       public string CreateBy { set; get; }
       public List<UserGroupViewModel> Groups { get { return _groups; } }
       public int OPStatus { set; get; }
-
-     
+      public bool IsReviewer{ get { return _groups.Any(f => f.Id == Constant.Group_Reviewers); } }
+      public bool IsUploader { get { return _groups.Any(f => f.Id == Constant.Group_Uploaders); } }
+      public bool IsAdministrator { get { return _groups.Any(f => f.Id == Constant.Group_Administrators); } }
     }
 }

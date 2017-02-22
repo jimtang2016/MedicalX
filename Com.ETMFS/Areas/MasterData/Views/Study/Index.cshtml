@@ -27,39 +27,39 @@
     </div>
     <div id="add_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
         <div class="easyui-tabs" id="studyTabs">
-             <div title="Basic Information" id="basicinfo">
-                                     <form id="userform" method="post">
-                                         <input type="hidden" name="Id" id="Id" />
-                                         <input type="hidden" name="Active" id="Active" value="true" />
-                                         <table class="dialog-content">
-                                             <tr>
-                                                 <td>
-                                                     <label class="textbox-label">* Study No</label>
-                                                 </td>
-                                                 <td>
-                                                     <input class="textbox easyui-validatebox" data-options="required:true" type="text" name="StudyNum" id="StudyNum" />
-                                                 </td>
-                                             </tr>
-                                             <tr>
-                                                 <td>
-                                                     <label class="textbox-label">* Short Title</label>
-                                                 </td>
-                                                 <td>
-                                                     <input class="textbox easyui-validatebox" data-options="required:true" type="text" id="ShortTitle" name="ShortTitle" />
-                                                 </td>
-                                             </tr>
-                                             <tr>
-                                                 <td>
-                                                     <label class="textbox-label">Status</label>
-                                                 </td>
-                                                 <td>
-                                                     <select class="combobox" panelheight="auto" type="text" id="Status" name="Status" />
-                                                 </td>
-                                             </tr>
-                                         </table>
+            <div title="Basic Information" id="basicinfo">
+                <form id="userform" method="post">
+                    <input type="hidden" name="Id" id="Id" />
+                    <input type="hidden" name="Active" id="Active" value="true" />
+                    <table class="dialog-content">
+                        <tr>
+                            <td>
+                                <label class="textbox-label">* Study No</label>
+                            </td>
+                            <td>
+                                <input class="textbox easyui-validatebox" data-options="required:true" type="text" name="StudyNum" id="StudyNum" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="textbox-label">* Short Title</label>
+                            </td>
+                            <td>
+                                <input class="textbox easyui-validatebox" data-options="required:true" type="text" id="ShortTitle" name="ShortTitle" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="textbox-label">Status</label>
+                            </td>
+                            <td>
+                                <select class="combobox" panelheight="auto" type="text" id="Status" name="Status" />
+                            </td>
+                        </tr>
+                    </table>
 
-                                     </form>
-                                 </div>
+                </form>
+            </div>
             <div title="Trial Reginal" id="trialregional">
                 <div title="DataGrid" style="padding:5px">
                     <table id="reginal_data">
@@ -68,18 +68,18 @@
                                 <th data-options="field:'Id'" width="80">Id</th>
                                 <th data-options="field:'CountryName'" width="100">CountryName</th>
                                 <th data-options="field:'OwnerName'" width="100">OwnerName</th>
-                                
+
                             </tr>
                         </thead>
                     </table>
                 </div>
             </div>
             <div title="Trial Member" id="trialmember">
-                           <div title="DataGrid" style="padding:5px">
+                <div title="DataGrid" style="padding:5px">
                     <table id="member_data">
                         <thead>
                             <tr>
-                                 
+
                                 <th data-options="field:'MemberName'" width="100">Member Name</th>
                                 <th data-options="field:'CountryName'" width="100">Country Name</th>
                                 <th data-options="field:'SiteName'" width="100">Site Name</th>
@@ -117,175 +117,17 @@
                                 <th data-options="field:'SiteName'" width="100">Site Name</th>
                                 <th data-options="field:'OwnerName'" width="100">Site Owner</th>
                                 <th data-options="field:'CountryName'" width="100">Site Country</th>
-                                <th data-options="field:'Status'" width="100">Status</th> 
+                                <th data-options="field:'Status'" width="100">Status</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
             </div>
         </div>
-     
+
 
     </div>
-
-    <div id="tmf_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
-        <div title="DataGrid" style="padding:5px">
-            <table id="alltemlate_data">
-                <thead>
-                    <tr>
-                        <th data-options="field:'ZoneNo'" width="100">Zone No</th>
-                        <th data-options="field:'ZoneName'" width="200">Zone Name</th>
-                        <th data-options="field:'SectionNo'" width="100">Section No</th>
-                        <th data-options="field:'SectionName'" width="200">Section Name</th>
-                        <th data-options="field:'ArtifactNo'" width="100">Artifact No</th>
-                        <th data-options="field:'ArtifactName'" width="200">Artifact Name</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-
-
-    <div id="site_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
-        <div title="Trial Site" id="siteinfo">
-            <form id="siteform" method="post">
-                <input type="hidden" name="Id" id="siteId" />
-                <input type="hidden" name="Active" id="siteActive" value="true" />
-                <input type="hidden" name="StudyId" id="StudyId" />
-                <input type="hidden" name="StudySiteId" id="StudySiteId" />
-                <input type="hidden" name="MemberId" />
-                
-                <table class="dialog-content">
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Site Num</label>
-                        </td>
-                        <td>
-                            <input class="textbox easyui-validatebox" data-options="required:true" name="SiteNum" id="SiteNum" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Site Name</label>
-                        </td>
-                        <td>
-                            <input class="textbox easyui-validatebox" data-options="required:true"  name="SiteName" id="SiteName" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="textbox-label">Status</label>
-                        </td>
-                        <td>
-                            <select class="combobox" panelheight="auto" name="Status" id="site_Status" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Country</label>
-                        </td>
-                        <td>
-                            <select class="combobox easyui-validatebox" data-options="required:true" panelheight="auto" name="CountryId" id="site_CountryId" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">Owner</label>
-                        </td>
-                        <td>
-                            <select class="combobox" panelheight="auto" name="OwnerId" id="site_OwnerId" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-    </div>
-
-    <div id="reginal_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
-        <div title="Trial Reginal" id="reginalinfo">
-            <form id="reginalform" method="post">
-                <input type="hidden" name="Id" id="ReginalId" />
-                <input type="hidden" name="Active" id="ReginalActive" value="true" />
-                <input type="hidden" name="MemberId" id="MemberId" />
-                <input type="hidden" name="StudyId" id="StudyId" />
-                <table class="dialog-content">
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Country</label>
-                        </td>
-                        <td>
-                            <select class="combobox easyui-validatebox" data-options="required:true" panelheight="auto" name="CountryId" id="CountryId" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">Owner</label>
-                        </td>
-                        <td>
-                            <select class="combobox" panelheight="auto" name="OwnerId" id="OwnerId" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        </div>
-
-
-
-    <div id="member_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
-        <div title="Trial Member" id="meminfo">
-            <form id="memberform" method="post">
-                <input type="hidden" name="Id" id="ReginalId" />
-                <input type="hidden" name="Active" id="ReginalActive" value="true" />
-                <input type="hidden" name="StudyId" id="StudyId" />
-                <table class="dialog-content">
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* User Name</label>
-                        </td>
-                        <td>
-                            <select class="combobox easyui-validatebox" panelheight="auto" name="MemberId" id="mem_OwnerId" data-options="required:true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Role Level</label>
-                        </td>
-                        <td>
-                            <select class="combobox" panelheight="auto" name="RoleLevel" id="mem_RoleLevel" data-options="required:true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">* Role</label>
-                        </td>
-                        <td>
-                            <select class="combobox" panelheight="auto" name="Role" id="mem_Role" data-options="required:true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="textbox-label">Country</label>
-                        </td>
-                        <td>
-                            <select class="combobox"   panelheight="auto" name="CountryCode" id="mem_CountryId" />
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <label class="textbox-label">Site</label>
-                        </td>
-                        <td>
-                            <select class="combobox"  panelheight="auto" name="SiteId" id="mem_SiteId" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-    </div>
+      @Html.Partial("_StudyPartialView");
     </div>
  
 

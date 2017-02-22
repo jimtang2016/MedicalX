@@ -28,13 +28,14 @@ namespace Com.ETMFS.Service.Common
           return bytes;
       } 
 
-      public void UploadtoSharePoint(string path, string filename,string host, string userId, string password, HttpPostedFileBase file,string domain)
+      public void UploadtoSharePoint(string path, ConfigSetting config, HttpPostedFileBase file )
       {
-          using (ClientContext client = new ClientContext(host))
+          using (ClientContext client = new ClientContext(config.PathURI))
           {
-              client.Credentials = new NetworkCredential(userId, password, domain);
-              Folder folder = client.Web.GetFolderByServerRelativeUrl(path);
-             byte [] bytes=new Byte[file.ContentLength];
+              client.Credentials = new NetworkCredential(config.UserId, config.Password, config.Domain);
+              var folderpath =path.Substring(0, path.LastIndexOf('/')+1);
+              Folder folder = client.Web.GetFolderByServerRelativeUrl(folderpath);
+              byte [] bytes=new Byte[file.ContentLength];
               file.InputStream.Read(bytes,0,file.ContentLength-1);
               client.Load(folder);
               client.ExecuteQuery();
@@ -42,21 +43,28 @@ namespace Com.ETMFS.Service.Common
               {
                   Content = bytes,
                   Overwrite = true,
-                  Url = folder.ServerRelativeUrl
+                  Url = folder.ServerRelativeUrl + path.Substring(path.LastIndexOf('/') , path.Length - path.LastIndexOf('/') )
               };
               var sfile = folder.Files.Add(fileinfo);
               client.ExecuteQuery();
-              sfile.CheckIn(string.Empty, CheckinType.MinorCheckIn);
-              client.ExecuteQuery();
+          
           }
       }
-      public byte[] DownloadWebServerFile(string path, string host, string userId, string password,string domain)
+      public byte[] DownloadWebServerFile(string path, ConfigSetting config)
       {
            byte [] folder=null;
           using (WebClient client = new WebClient())
           {
-              client.Credentials = new NetworkCredential(userId, password, domain);
-               folder = client.DownloadData(path);
+              try
+              {
+                  client.Credentials = new NetworkCredential(config.UserId, config.Password, config.Domain);
+                  folder = client.DownloadData(path);
+              }
+              catch (Exception ex)
+              {
+                  throw ex;
+              }
+            
           }
           return folder;
       }

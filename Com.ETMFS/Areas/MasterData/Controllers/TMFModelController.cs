@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.Service.Common;
 using Com.ETMFS.Service.Core.Interfaces;
 using Com.ETMFS.Service.Core.ViewModel;
@@ -52,6 +53,22 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         [LoginFilter]
         [HttpPost]
+        public JsonResult GetUserTMFS(TMFFilter condition)
+        {
+            try
+            {
+                var list = _tmfservice.GetTMFModelList(CurUser.Id, condition);
+                return Json (list);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message });
+            }
+      
+        }
+        
+        [LoginFilter]
+        [HttpPost]
         public JsonResult Import(HttpPostedFileBase file)
         {
             var fileName = Path.Combine(Request.MapPath("~/Upload"), Path.GetFileName(file.FileName));
@@ -66,7 +83,6 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         {
               var sbHtml = new StringBuilder();
               var fileContents = _tmfservice.GetAllTemplateStream();
-             
               return File(fileContents, "application/ms-excel", "fileContents.csv");
         }
     }

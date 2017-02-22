@@ -53,6 +53,8 @@ namespace Com.ETMFS.App_Start
             container.RegisterType<IUsersRepository, UsersRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IUserGroupsRepository, UserGroupsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<ITMFTemplateRepository, TMFTemplateRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<IDocumentRepository, DocumentRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<IDocumentService, DocumentService>(new PerRequestLifetimeManager());
             container.RegisterType<IStudyRepository, StudyRepository>(new PerRequestLifetimeManager());
             container.RegisterType<ICountryRepository, CountryRepository>(new PerRequestLifetimeManager()); 
             container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
@@ -60,6 +62,8 @@ namespace Com.ETMFS.App_Start
             container.RegisterType<ICountryService, CountryService>(new PerRequestLifetimeManager());
             container.RegisterType<ITMFReferenceService,TMFReferenceService>(new PerRequestLifetimeManager());
             container.RegisterType<IStudyService, StudyService>(new PerRequestLifetimeManager());
+            container.RegisterType<IIssuelogRepository, IssuelogRepository>(new PerRequestLifetimeManager());
+            
              
         }
     }

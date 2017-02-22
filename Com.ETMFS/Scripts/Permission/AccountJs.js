@@ -11,8 +11,16 @@ com.AccountController = function () {
             data: { logindata: JSON.stringify(this.User) },
             dataType: 'json',
             success: function (data) {
-                alert(data.Message);
-                location.href = "../../home/";
+                if (data.Result) {
+                    alert(data.Message);
+                    if (data.IsAdministrator) {
+                        location.href = "../../home/";
+                    } else {
+                        location.href = "../../Masterdata/StudyDocument/";
+                    }
+                }
+               
+              
             },
             error: function (data) {
 

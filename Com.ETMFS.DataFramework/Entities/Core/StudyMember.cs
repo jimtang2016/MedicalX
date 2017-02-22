@@ -45,6 +45,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public string SiteName { get; set; }
         public virtual Study Study { get; set; }
         public virtual Users User { get; set; }
-    
+        [NotMapped]
+        public int? OwnerId { get; set; }
     }
 }

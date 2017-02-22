@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ConfigSetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <HostType>2</HostType>
+  <IsShareFolder>false</IsShareFolder>
+  <UserId>yongjian.tang</UserId>
+  <Password>T2ang4567</Password>
+  <Domain>.</Domain>
+  <PathURI>\\192.168.99.55\\Users</PathURI>
+  <RootFolder>ETMF</RootFolder>
+</ConfigSetting>

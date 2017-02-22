@@ -75,11 +75,11 @@ namespace Com.ETMFS.Service.Core.Impls
 
       }
 
-      public List<SiteViewModel> GetStudySites(int id)
+      public List<SiteViewModel> GetStudySites(int id,int? countryId)
       {
           if (id > 0)
           {
-              var list = _studyRepos.GetStudySitesById(id);
+              var list = _studyRepos.GetStudySitesById(id).Where(f => countryId.HasValue&&f.CountryId == countryId || !countryId.HasValue).ToList();
               return Common<Site, SiteViewModel>.ConvertToViewModel(list);
           }
           else
@@ -203,12 +203,14 @@ namespace Com.ETMFS.Service.Core.Impls
           };
           return pageout;
       }
-     public List<TrialReginalViewModel> GetTrialRegionals(int id)
+     public List<TrialReginalViewModel> GetTrialRegionals(int id,int p)
       {
-          return _studyRepos.GetTrialCountries(id).Select(f => new TrialReginalViewModel()
+          return _studyRepos.GetTrialCountries(id).Where(f=>f.OwnerId==p||f.Study.StudyMember.Any(fg=>fg.Role==Constant.Role_Owner&&fg.RoleLevel==Constant.RoleLevel_Trial
+              &&fg.MemberId==p&&fg.Active.Value)).Select(f => new TrialReginalViewModel()
           {
               CountryId=f.CountryId,
-              CountryName=f.Country.CountryName 
+              CountryName=f.Country.CountryName,
+              CountryCode=f.Country.CountryCode
              
           }).Distinct().ToList();
       }
@@ -336,7 +338,51 @@ namespace Com.ETMFS.Service.Core.Impls
     }
       #endregion
 
+    public PermissionViewModel GetPermission(TMFFilter filter,int p)
+    {
+        PermissionViewModel permission = new PermissionViewModel();
+        var study = _studyRepos.GetById(filter.Study.Value);
+        IEnumerable<StudyMember> query = null;
+        if (filter.Study.HasValue)
+        {
+            
+            if (filter.Country != null)
+            {
+               
+                query = study.StudyMember.Where(mem => mem.MemberId == p
+              && (mem.CountryCode == filter.Country|| 
+              mem.RoleLevel == Constant.RoleLevel_Trial
+              && mem.Study.Id == filter.Study)
+              && mem.Active.HasValue && mem.Active.Value
+              );
+            }
+            else 
+            if (filter.Site != null)
+            {
+            
+                query = study.StudyMember.Where(mem => mem.MemberId == p
+             && (mem.SiteId == filter.Site
+             || mem.RoleLevel == Constant.RoleLevel_Trial && mem.Study.Id == filter.Study
+             || mem.RoleLevel == Constant.RoleLevel_Country && mem.CountryCode==filter.Country)
+              && mem.Active.HasValue && mem.Active.Value
+                );
+            }
+            else
+            {
+                query = study.StudyMember.Where(mem => mem.MemberId == p
+           && mem.RoleLevel == Constant.RoleLevel_Trial
+           && mem.Study.Id == filter.Study
+           && mem.Active.HasValue && mem.Active.Value
+             );
+            }
+            var mems = query.ToList();
+            permission.IsOwner = mems.Any(mem => mem.Role == Constant.Role_Owner);
+            permission.IsUploader = mems.Any(mem => mem.Role == Constant.Role_Uploader);
+            permission.IsReviewer = mems.Any(mem => mem.Role == Constant.Role_Reviewer);
+        }
 
+        return permission;
+    }
     public void RemoveRegionals(List<TrialReginalViewModel> trialRegs, string op)
     {
         if(trialRegs.Count>0){
@@ -365,7 +411,7 @@ namespace Com.ETMFS.Service.Core.Impls
 
     void AddOrSaveMember(Study study, MemberViewModel memv)
     {
-        StudyMember member=null;
+        StudyMember member = null;
 
         if (memv.Role == Constant.Role_Owner)
         {
@@ -406,7 +452,7 @@ namespace Com.ETMFS.Service.Core.Impls
         {
             member = study.StudyMember.Where(f => f.Id == memv.Id)
                    .FirstOrDefault();
-           
+
         }
 
 
@@ -418,7 +464,7 @@ namespace Com.ETMFS.Service.Core.Impls
                 Created = DateTime.Now
             };
         }
-        
+
         member.MemberId = memv.MemberId;
         member.RoleLevel = memv.RoleLevel;
         member.Role = memv.Role;
@@ -427,13 +473,13 @@ namespace Com.ETMFS.Service.Core.Impls
         member.ModifiBy = memv.OperatorId;
         member.SiteId = memv.SiteId;
         member.Active = memv.Active;
-        
+
         if (member.Id == 0)
         {
             study.StudyMember.Add(member);
         }
-       
-      }
+
+    }
     string GetURI(string rootpath,bool isfilesystem,string newfolder)
     {
         var temp = string.Empty;
@@ -519,7 +565,11 @@ namespace Com.ETMFS.Service.Core.Impls
             helper.MappingSharePointFolder(paths, config);
         }
     }
-
+    public List<StudyViewModel> GetUserStudyList(int p)
+    {
+      var list = _studyRepos.GetUserStudyList(p);
+      return  Common<Study, StudyViewModel>.ConvertToViewModel(list.Distinct().ToList());
+    }
     List<string> GetPathsFromTemplates(string rootpath, List<TMFTemplate> temps, bool isfilesystem)
     {
         List<string> paths =new  List<string>();

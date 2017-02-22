@@ -19,6 +19,7 @@ namespace Com.ETMFS.Service.Core.ViewModel
         public int? SiteId { get; set; }
         public int? CountryCode { get; set; }
         public string OperatorId { get; set; }
-        public bool? Active { get; set; }   
+        public bool? Active { get; set; }
+        public int? OwnerId { get; set; }
     }
 }

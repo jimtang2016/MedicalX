@@ -8,23 +8,23 @@
     @Scripts.Render("~/bundles/jquery")
     
 </head>
-<body>
-    
-    <div class="easyui-layout" style="width:100%;min-height:600px;">
+<body class="easyui-layout">
+
+  
         <div data-options="region:'north'" style="height:50px">
-                                                            <div  style="float:right;padding-top:10px;padding-right:10px"  >
-                                                                Welcome :@ViewBag.CurrentUser
-                                                                <a href="javascript:void(-1)" onclick="com.common.LogOff()">  Logoff        </a>
-                                                            </div>
+            <div style="float:right;padding-top:10px;padding-right:10px">
+                Welcome :@ViewBag.CurrentUser
+                <a href="javascript:void(-1)" onclick="com.common.LogOff()">  Logoff        </a>
+            </div>
         </div>
-        
-      
+
+
         <div data-options="region:'west',split:true" title="Navigation" style="width:200px;">
             <div class="easyui-accordion" data-options="fit:true,border:false">
-                <div id="account" title="Permissions"  style="padding:10px;">
-                        <div class="menu-item" id="fun_users">
-                            <a class="menu-text" href="../../permission/account/userlist">Users</a>
-                        </div>
+                <div id="account" title="Permissions" style="padding:10px;">
+                    <div class="menu-item" id="fun_users">
+                        <a class="menu-text" href="../../permission/account/userlist">Users</a>
+                    </div>
                     <div class="menu-item" id="fun_groups">
                         <a class="menu-text" href="../../permission/group">Groups</a>
                     </div>
@@ -34,16 +34,16 @@
                     <div class="menu-item" id="fun_funs">
                         <a class="menu-text">Functions</a>
                     </div>
-                    
+
                 </div>
                 <div id="Masterdata" title="Master Data" style="padding:10px;">
                     <div class="menu-item" id="fun_country">
-                        <a   class="menu-text" href="../../MasterData/Country/">Country</a>
+                        <a class="menu-text" href="../../MasterData/Country/">Country</a>
                     </div>
                     <div class="menu-item" id="fun_tmfm">
                         <a class="menu-text" href="../../MasterData/TMFModel/">TMF Model Refrence</a>
                     </div>
-                   
+
                 </div>
                 <div id="Studymanage" title="Study Management" style="padding:10px">
                     <div class="menu-item" id="fun_study">
@@ -53,9 +53,9 @@
             </div>
         </div>
         <div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
-          @RenderBody()
+            @RenderBody()
         </div>
-    </div>
- 
+   
+
 </body>
 </html>

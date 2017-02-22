@@ -44,16 +44,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Impls\CountryService.cs" />
+    <Compile Include="Impls\DocumentService.cs" />
     <Compile Include="Impls\StudyService.cs" />
     <Compile Include="Impls\TMFReferenceService.cs" />
     <Compile Include="Interfaces\ICountryService.cs" />
+    <Compile Include="Interfaces\IDocumentService.cs" />
     <Compile Include="Interfaces\IStudyService.cs" />
     <Compile Include="Interfaces\ITMFReferenceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\CountryViewModel.cs" />
+    <Compile Include="ViewModel\DocumentSumView.cs" />
+    <Compile Include="ViewModel\DocumentViewModel.cs" />
     <Compile Include="ViewModel\MemberViewModel.cs" />
+    <Compile Include="ViewModel\PermissionViewModel.cs" />
     <Compile Include="ViewModel\SiteViewModel.cs" />
+    <Compile Include="ViewModel\StudyDocumentViewModel.cs" />
     <Compile Include="ViewModel\StudyViewModel.cs" />
+    <Compile Include="ViewModel\TmfNote.cs" />
     <Compile Include="ViewModel\TMFRefernceViewModel.cs" />
     <Compile Include="ViewModel\TrialReginalViewModel.cs" />
   </ItemGroup>

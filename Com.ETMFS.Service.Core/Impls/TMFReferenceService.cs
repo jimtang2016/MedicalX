@@ -20,11 +20,142 @@ namespace Com.ETMFS.Service.Core.Impls
     {
        ITMFTemplateRepository _tmtcontext;
        IUnitOfWork _unitwork;
-
-       public TMFReferenceService(ITMFTemplateRepository tmtcontext, IUnitOfWork unitwork)
+       IStudyRepository _studycontext;
+       public TMFReferenceService(ITMFTemplateRepository tmtcontext, IUnitOfWork unitwork,IStudyRepository studycontext)
        {
            _tmtcontext = tmtcontext;
            _unitwork = unitwork;
+           _studycontext = studycontext;
+       }
+        
+       public List<TmfNote> GetTMFModelList(int p, TMFFilter condition)
+       {
+           List<StudyTemplateViewModel> tmfs = null;
+        
+           if (condition.Study != null)
+           {
+               if (condition.Study.HasValue)
+               {
+
+                   var studylist = _studycontext.GetUserStudyList(p).FirstOrDefault(from => from.Id == condition.Study);
+                    condition.TMFLevel=Constant.RoleLevel_Trial;
+
+                   if(condition.Country.HasValue){
+                       condition.TMFLevel=Constant.RoleLevel_Country;
+                   }
+                   if(condition.Site.HasValue){
+                       condition.TMFLevel=Constant.RoleLevel_Site;
+                   }
+
+                   var tmfsquery = from tmf in _studycontext.GetSutdyTemplates( studylist,condition)
+                              select ConvertStudyTemplates( tmf);
+                   tmfs = tmfsquery.ToList();
+               }
+           }
+           else
+           {
+              var tmfsquery = from tmf in _tmtcontext.GetAll()
+                      where tmf.Active.HasValue && tmf.Active.Value
+                        select ConvertStudyTemplates( tmf);;
+               tmfs = tmfsquery.ToList();
+           }
+           return GetNodeList(tmfs);
+       }
+
+       List<TmfNote> GetNodeList(List<StudyTemplateViewModel> tmfs)
+       {
+            var templist = new List<TmfNote>();
+            tmfs.GroupBy(f => f.ZoneNo).ToList().ForEach(t =>
+           {
+
+               var temp = t.FirstOrDefault();
+               var filter = new TMFFilter()
+               {
+                   ZoneNo = temp.ZoneNo,
+                   ZoneName = temp.ZoneName
+               };
+               var item = new TmfNote() { id = temp.ZoneNo, text = temp.ZoneName, category = filter };
+
+
+               t.GroupBy(ts => ts.SectionNo).ToList().ForEach(ts =>
+               {
+                   var temps = ts.FirstOrDefault();
+                   var filters = new TMFFilter()
+                   {
+                       ZoneNo = temp.ZoneNo,
+                       SectionNo = temps.SectionNo,
+                       SectionName = temps.SectionName
+                   };
+
+                   var items = new TmfNote() { id = filters.ZoneNo + filters.SectionNo, text = temps.SectionName, category = filters };
+                   ts.ToList().ForEach(tmf =>
+                   {
+                       var tmfilter = new TMFFilter()
+                       {
+                           ZoneNo = filters.ZoneNo,
+                           SectionNo = filters.SectionNo,
+                           SectionName = filters.SectionName,
+                           ArticleNo = tmf.ArtifactNo,
+                           ArticleName = tmf.ArtifactName,
+                           TMFId = tmf.RTMId,
+                           StudyTemplateId=tmf.StudyTemplateId
+                       };
+
+                       var itemts = new TmfNote() { id = tmfilter.ZoneNo + tmfilter.SectionNo + tmfilter.ArticleNo, text = tmf.ArtifactName, category = tmfilter };
+                       items.children.Add(itemts);
+                   });
+                 
+                   item.children.Add(items);
+               });
+
+               templist.Add(item);
+           });
+           
+
+      
+       return templist;
+       }
+
+       StudyTemplateViewModel ConvertStudyTemplates(TMFTemplate temp)
+       {
+           var studyveiw = new StudyTemplateViewModel()
+           {
+                RTMId=temp.Id,
+               ZoneNo = temp.ZoneNo,
+
+               ZoneName = temp.ZoneName,
+
+               SectionNo = temp.SectionNo,
+
+               SectionName = temp.SectionName,
+
+               ArtifactNo = temp.ArtifactNo,
+
+               ArtifactName = temp.ArtifactName
+
+           };
+           return studyveiw;
+       }
+
+       StudyTemplateViewModel ConvertStudyTemplates(StudyTemplate temp)
+       {
+           var studyveiw = new StudyTemplateViewModel()
+           {
+               StudyTemplateId = temp.Id,
+               ZoneNo = temp.TMFTemplate.ZoneNo,
+
+               ZoneName = temp.TMFTemplate.ZoneName,
+
+               SectionNo = temp.TMFTemplate.SectionNo,
+
+               SectionName = temp.TMFTemplate.SectionName,
+
+               ArtifactNo = temp.TMFTemplate.ArtifactNo,
+
+               ArtifactName = temp.TMFTemplate.ArtifactName
+
+           };
+           return studyveiw;
        }
 
        public PageResult<TMFRefernceViewModel> GetTMFModelList(int id, int page, int rows)

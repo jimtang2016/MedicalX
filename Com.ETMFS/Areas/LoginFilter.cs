@@ -22,7 +22,7 @@ namespace Com.ETMFS.Areas
             var user =filterContext.HttpContext.Session["User"] as UserViewModel;
             if (user == null)
             {
-                filterContext.Result = new RedirectResult("../../Permission/Account/Index");  
+                filterContext.Result = new RedirectResult("/Permission/Account/Index");  
             }
             else
             {

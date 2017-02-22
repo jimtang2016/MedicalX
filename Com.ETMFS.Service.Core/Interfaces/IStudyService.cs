@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Com.ETMFS.DataFramework;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.DataFramework.Entities.Permission;
 using Com.ETMFS.Service.Core.ViewModel;
 
@@ -22,7 +23,7 @@ namespace Com.ETMFS.Service.Core.Interfaces
 
        PageResult<MemberViewModel> GetStudyMembers(int id, int page, int rows);
 
-       List<TrialReginalViewModel> GetTrialRegionals(int id);
+       List<TrialReginalViewModel> GetTrialRegionals(int id,int p);
        List<OptionList> GetOptionListByParentId(int parentId);
 
        void SaveStudyMembers(MemberViewModel mem,string op);
@@ -37,8 +38,12 @@ namespace Com.ETMFS.Service.Core.Interfaces
 
        void SaveStudySite(SiteViewModel site,string op);
 
-       List<SiteViewModel> GetStudySites(int id);
+       List<SiteViewModel> GetStudySites(int id, int? countryId);
 
        void MappingFolders(Common.ConfigSetting config);
+
+       List<StudyViewModel> GetUserStudyList( int p);
+
+       PermissionViewModel GetPermission(TMFFilter filter,int p);
     }
 }

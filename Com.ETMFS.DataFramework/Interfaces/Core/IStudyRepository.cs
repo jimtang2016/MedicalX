@@ -27,5 +27,8 @@ namespace Com.ETMFS.DataFramework.Interfaces.Core
         List<Site> GetStudySitesById(int id);
 
         List<Study> GetStudyList();
+        List<Study> GetUserStudyList(int userId);
+
+        List<StudyTemplate> GetSutdyTemplates(Study studylist,TMFFilter condition);
     }
 }

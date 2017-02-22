@@ -31,10 +31,74 @@ String.prototype.FormatDate = function () {
     }
     return temp;
 }
+
+String.prototype.FormatMinutsDate = function () {
+    var temp = "";
+    if (this != null && this != undefined && this != "") {
+        var datestring = this.split("(")[1].split(")")[0];
+        var date = new Date(parseFloat(datestring));
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var year = date.getFullYear();
+        temp = year + "-";
+        if (month < 10) {
+            temp = temp + "0" + month + "-";
+        } else {
+            temp = temp + month + "-";
+        }
+
+        if (day < 10) {
+            temp = temp + "0" + day;
+        } else {
+            temp = temp + day;
+        }
+
+
+        var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+        var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        var second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+
+        temp = temp + " " + hour + ":" + minute + ":" + second;
+    }
+    return temp;
+}
 com.common = {
+    ShowChart: function (el, chartobj) {
+        Highcharts.chart(el, chartobj);
+    },
+    Init3dPie:function(optoins,serises){
+       var piechart= {
+            chart: {
+                    type: 'pie',
+                    options3d: {
+                    enabled: false,
+                    alpha: 45,
+                    beta: 0
+                    }
+            },
+            title: optoins.title,
+            tooltip: optoins.tooltip,
+            plotOptions: {
+                pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 35,
+                        dataLabels: {
+                        enabled: false,
+                        format: '{point.name}'
+                        }
+                }
+            },
+            series: serises,
+            credits: {
+                enabled: false
+            }
+       };
+       return piechart;
+    },
     LogOff:function(){
         $.ajax({
-            url: '../Account/LogOff',
+            url: '../../Permission/Account/LogOff',
             type: 'post',
             
             dataType: 'json',
@@ -66,6 +130,10 @@ com.common = {
     formatdate: function (value, row, index) {
         return value.FormatDate();
     },
+    formatminutdate: function (value, row, index) {
+        return value.FormatMinutsDate();
+    },
+    
     openDialog: function (el, title, funsave, funCancel, width) {
         if (width == undefined || width == null) {
             width = 400;
@@ -152,8 +220,6 @@ com.common = {
         $(p).pagination({
             pageSize: 10,//每页显示的记录条数，默认为10 
             pageList: [5, 10, 15]//可以设置每页记录条数的列表 
-
-
         });
 
     },

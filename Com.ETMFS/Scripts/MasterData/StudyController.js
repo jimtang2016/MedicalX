@@ -4,6 +4,90 @@
 
 com.StudyController = function () {
     var self = {
+        BackItem: {Study:null,Country:null,Site:null},
+        CurrentItem:{Study:null,Country:null,Site:null},
+        StudyLevel: "Study",
+        CountryLevel: "Country",
+        SiteLevel: "Site",
+       
+        InitAction: function (IsStudyLevel, EditGrid, IsDelete, callback) {
+           
+         
+            if (IsStudyLevel==self.StudyLevel) {
+                self.CurrentItem.Country = null;
+                self.CurrentItem.Site = null;
+                self.CurrentItem.Study = self.BackItem.Study;
+            }  else 
+            if (IsStudyLevel == self.CountryLevel) {
+                self.CurrentItem.Site = null;
+                self.CurrentItem.Country = self.BackItem.Country;
+                 self.CurrentItem.Study = self.BackItem.Study;
+            } else {
+                self.CurrentItem.Country = self.BackItem.Country;
+                self.CurrentItem.Site = self.BackItem.Site;
+                self.CurrentItem.Study = self.BackItem.Study;
+            }
+
+            if (self.CurrentItem.Study == null) {
+                alert("Please choose a trial");
+                return;
+            }
+            if (EditGrid != null && EditGrid!=undefined) {
+                var ets = $("#" + EditGrid).datagrid("getChecked");
+                if (!self.validateSameOwner(ets) && IsDelete) {
+                    alert("Selected list contain two or more owner please check");
+                    return;
+                }
+                if (ets.length > 0) {
+                    var et = ets[0];
+                    if (EditGrid == "reginal_data") {
+                       
+                        self.CurrentItem.Country = et.CountryId;
+                    } else if (EditGrid == "site_data") {
+                       
+                        self.CurrentItem.Site = et.Id;
+                        self.CurrentItem.Country = et.CountryId;
+                    }
+                    else if (EditGrid == "member_data") {
+                        self.CurrentItem.Country = et.CountryCode;
+                        self.CurrentItem.Site = et.SiteId;
+                    }
+                }
+                }
+               
+            
+
+            $.ajax({
+                url: "../../MasterData/Study/GetUserPermission",
+                type: "post",
+                data: { filter: self.CurrentItem },
+                success: function (data) {
+                    if (data.IsOwner) {
+                        callback();
+                    } else {
+                        alert("User have no permission to do this operation");
+                    }
+             
+                }
+
+            });
+        },
+        validateSameOwner:function(ets){
+            var temcountryId = 0;
+            var hassamecountries = true;
+            for (var i = 0; i < ets.length; i++) {
+                temp = ets[i];
+                if (i == 0) {
+                    temcountryId = temp.OwnerId;
+                } else if (temp.OwnerId != temcountryId) {
+                    hassamecountries = false;
+                }
+            }
+            return hassamecountries;
+        },
+
+        
+
         Load: function () {
             this.InitComboBox();
             this.InitStudyGrid();
@@ -80,7 +164,7 @@ com.StudyController = function () {
 
         },
         InitReginalGrid: function () {
-            com.common.initqueryGrid("reginal_data", "Trial Reginal", 'icon-edit', '../Study/GetTrialRegionals', { id: 0 }, [
+            com.common.initqueryGrid("reginal_data", "", '', '../Study/GetTrialRegionals', { id: 0 }, [
 
                    {
                        text: 'Add',
@@ -102,7 +186,7 @@ com.StudyController = function () {
             ]);
         },
         InitTemplatesGrid: function () {
-            com.common.initqueryGrid("temlate_data", "Trial Template", 'icon-edit', '../Study/GetTrialTempaltes', { id: 0 },
+            com.common.initqueryGrid("temlate_data", "", '', '../Study/GetTrialTempaltes', { id: 0 },
                 [
      {
          text: 'Add',
@@ -123,7 +207,7 @@ com.StudyController = function () {
         },
         InitMemberGrid: function () {
 
-            com.common.initqueryGrid("member_data", "Trial Member", 'icon-edit', '../Study/GetMembers', { id: 0 }, [
+            com.common.initqueryGrid("member_data", "", '', '../Study/GetMembers', { id: 0 }, [
 
                   {
                       text: 'Add',
@@ -147,7 +231,7 @@ com.StudyController = function () {
         }
         ,
         InitSitesGrid:function(){
-            com.common.initqueryGrid("site_data", "Trial Site", 'icon-edit', '../Study/GetStudySites', { id: 0 }, [
+            com.common.initqueryGrid("site_data", "", '', '../Study/GetStudySites', { id: 0 }, [
 
                  {
                      text: 'Add',
@@ -168,38 +252,40 @@ com.StudyController = function () {
 
             ]);
         },
-        Site_Remove:function(){
-            var users = $('#site_data').datagrid('getChecked');
-            if (users.length > 0 && confirm("Sites will be removed from Site list do you confirm them?")) {
-                $(users).each(function (i, item) {
-                    item.Active = false;
-                    item.StudyId = $("#Id").val();
-                });
-                $.ajax({
-                    url: '../Study/DelStudySites',
-                    type: 'post',
-                    data: { sites: JSON.stringify(users) },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.result) {
-                            alert("Sites are removed ");
-                            $("#site_data").datagrid("clearChecked");
-                            $('#site_data').datagrid('reload');
-                            $('#member_data').datagrid('reload');
-                        } else {
-                            alert("There are some errors in this operation ");
-                        }
+        Site_Remove: function () {
+            self.InitAction(self.CountryLevel,"site_data",true,
+            function () {
+                var users = $('#site_data').datagrid('getChecked');
+                if (users.length > 0 && confirm("Sites will be removed from Site list do you confirm them?")) {
+                    $(users).each(function (i, item) {
+                        item.Active = false;
+                        item.StudyId = $("#Id").val();
+                    });
+                    $.ajax({
+                        url: '../Study/DelStudySites',
+                        type: 'post',
+                        data: { sites: JSON.stringify(users) },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.result) {
+                                alert("Sites are removed ");
+                                $("#site_data").datagrid("clearChecked");
+                                $('#site_data').datagrid('reload');
+                                $('#member_data').datagrid('reload');
+                            } else {
+                                alert("There are some errors in this operation ");
+                            }
 
-                    },
-                    error: function (data) {
-                        alert(data);
-                    }
-                });
-            }
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });
+                }
+            });
         },
         Site_Add: function () {
-            
-            var site = { Id: 0, Active: true, Status: "NotSelected",MemberId:0 };
+            var site = { Id: 0, Active: true, Status: "NotSelected", MemberId: 0 };
             self.LoadSite(site);
         },
         LoadSite:function(site){
@@ -217,8 +303,10 @@ com.StudyController = function () {
             com.common.openDialog("site_dialog", "Trial Site", self.Site_Save, self.Site_Cancel);
         },
         Site_Edit: function () {
-            var site = com.common.GetEditItem("site_data");
-            self.LoadSite(site);
+            self.InitAction(self.CountryLevel, "site_data",false, function () {
+                var site = com.common.GetEditItem("site_data");
+                self.LoadSite(site);
+            });
         },
         Site_Save: function () {
             $("#siteform").form("submit", {
@@ -240,16 +328,22 @@ com.StudyController = function () {
             });
         },
         Site_Cancel: function () {
+            $("#siteform").form("clear");
             com.common.closeDialog("site_dialog", "Trial Site", self.Site_Save, self.Site_Cancel);
         },
         Template_Add: function () {
-            var studyId = $("#Id").val();
-            com.common.openDialog("tmf_dialog", "Trial Model Reference", self.Template_Save, self.Template_Cancel, 800);
-            $('#alltemlate_data').datagrid({ queryParams: { id: studyId } });
+            self.InitAction(self.StudyLevel, null, false, function () {
+                var studyId = $("#Id").val();
+                com.common.openDialog("tmf_dialog", "Trial Model Reference", self.Template_Save, self.Template_Cancel, 800);
+                $('#alltemlate_data').datagrid({ queryParams: { id: studyId } });
+            });
+          
         },
         Template_Remove: function () {
-            var templists = $("#temlate_data").datagrid("getChecked");
-            self.Temlate_onSave(templists, true, []);
+            self.InitAction(self.StudyLevel, "#temlate_data", true, function () {
+                var templists = $("#temlate_data").datagrid("getChecked");
+                self.Temlate_onSave(templists, true, []);
+            });
         },
         Temlate_onSave: function (templists, isdel, country) {
             var id = $("#Id").val();
@@ -287,7 +381,6 @@ com.StudyController = function () {
             }
         },
         Template_Save: function () {
-
             var templists = $('#alltemlate_data').datagrid('getChecked');
             self.Temlate_onSave(templists, false, []);
 
@@ -336,58 +429,76 @@ com.StudyController = function () {
 
             }
             reginal.StudyId = $("#Id").val();
-            self.ReginalOptoin.url = self.ReginalOptoin.url.substring(0, self.ReginalOptoin.url.lastIndexOf('/') + 1) + reginal.StudyId;
-
-            var siteoptoin = {
-                url: "../Study/GetTrialSites/" + reginal.StudyId,
-                valueField: 'Id',
-                textField: 'SiteName',
-
+            var teginalOptoin = {
+                url: "../Study/GetTrialReginals/" + reginal.StudyId,
+                valueField: 'CountryId',
+                textField: 'CountryName',
+                onSelect:
+                    function (data) {
+                        var studyId = $("#Id").val();
+                        var siteoptoin = {
+                            url: "../Study/GetTrialSites/" + studyId + "?countryId" + data.CountryId,
+                            valueField: 'SiteId',
+                            textField: 'SiteName'
+                        }
+                        com.common.Combox("mem_SiteId", siteoptoin);
+                    }
             }
             com.common.Combox("mem_OwnerId", self.UserOptoin);
-            com.common.Combox("mem_CountryId", self.ReginalOptoin);
+            com.common.Combox("mem_CountryId", teginalOptoin);
+            
+          
+
+
             com.common.Combox("mem_RoleLevel", roleleveloptoin);
             com.common.Combox("mem_Role", roleoptoin);
-            com.common.Combox("mem_SiteId", siteoptoin);
+            
             com.common.openDialog("member_dialog", "Trial Member", self.Member_Save, self.Member_Cancel);
             $("#memberform").form("load", reginal);
         },
         Member_Add: function () {
-            var reginal = { Id: 0, Active: true, StudyId: $("#Id").val() };
-            self.Member_Load(reginal);
+                var reginal = { Id: 0, Active: true, StudyId: $("#Id").val() };
+                self.Member_Load(reginal);
         },
         Member_Edit: function () {
-            var users = com.common.GetEditItem("member_data");
-            self.Member_Load(users);
+            self.InitAction(self.SiteLevel, "member_data", false, function () {
+                var users = com.common.GetEditItem("member_data");
+                self.Member_Load(users);
+            });
+       
         },
         Member_Remove: function () {
-            var users = $('#member_data').datagrid('getChecked');
-            if (users.length > 0 && confirm("Studies will be removed from Member list do you confirm them?")) {
-                $(users).each(function (i, item) {
-                    item.Active = false;
-                });
-                $.ajax({
-                    url: '../Study/DeleteMembers',
-                    type: 'post',
-                    data: { mems: JSON.stringify(users) },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.result) {
-                            alert("Members are removed ");
-                            $("#member_data").datagrid("clearChecked");
-                            $('#member_data').datagrid('reload');
-                            $('#reginal_data').datagrid('reload');
-                            $('#site_data').datagrid('reload');
-                        } else {
-                            alert("There are some errors in this operation ");
-                        }
 
-                    },
-                    error: function (data) {
-                        alert(data);
-                    }
-                });
-            }
+            self.InitAction(self.SiteLevel, "member_data", true, function () {
+                var users = $('#member_data').datagrid('getChecked');
+                if (users.length > 0 && confirm("Studies will be removed from Member list do you confirm them?")) {
+                    $(users).each(function (i, item) {
+                        item.Active = false;
+                    });
+                    $.ajax({
+                        url: '../Study/DeleteMembers',
+                        type: 'post',
+                        data: { mems: JSON.stringify(users) },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.result) {
+                                alert("Members are removed ");
+                                $("#member_data").datagrid("clearChecked");
+                                $('#member_data').datagrid('reload');
+                                $('#reginal_data').datagrid('reload');
+                                $('#site_data').datagrid('reload');
+                            } else {
+                                alert("There are some errors in this operation ");
+                            }
+
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });
+                }
+            });
+            
         },
         Member_Save: function () {
             if ($("#memberform").form('validate')) {
@@ -418,12 +529,18 @@ com.StudyController = function () {
             com.common.closeDialog("member_dialog");
         },
         Reginal_Add: function () {
-            var reginal = { Id: 0, Active: true, MemberId: 0};
-            self.Reginal_Load(reginal);
+            self.InitAction(self.StudyLevel, null, false, function () {
+                var reginal = { Id: 0, Active: true, MemberId: 0 };
+                self.Reginal_Load(reginal);
+            });
+          
         },
         Reginal_Edit: function () {
-            var reginal = com.common.GetEditItem("reginal_data");
-            self.Reginal_Load(reginal);
+            self.InitAction(self.CountryLevel, "reginal_data",false, function () {
+                var reginal = com.common.GetEditItem("reginal_data");
+                self.Reginal_Load(reginal);
+            });
+          
         },
         Reginal_Load: function (reginal) {
             var countyoptoin = {
@@ -455,7 +572,7 @@ com.StudyController = function () {
                 },
                 error: function (data) {
                     var d = JSON.parse(data);
-                    alert(d.Messsage)
+                    alert(d.Messsage);
                 }
             });
         }
@@ -466,32 +583,34 @@ com.StudyController = function () {
         }
         ,
         Reginal_Remove: function () {
-            var users = $('#reginal_data').datagrid('getChecked');
-            if (users.length > 0 && confirm("Reginal will be removed from Reginal list do you confirm them?")) {
-                $(users).each(function (i, item) {
-                    item.Active = false;
-                });
-                $.ajax({
-                    url: '../Study/DeleteTrialRegionals',
-                    type: 'post',
-                    data: { trialRegs: JSON.stringify(users) },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.result) {
-                            alert("Reginal are removed ");
-                            $("#reginal_data").datagrid("clearChecked");
-                            $('#reginal_data').datagrid('reload');
-                            $('#member_data').datagrid('reload');
-                        } else {
-                            alert("There are some errors in this operation ");
-                        }
+            self.InitAction(self.StudyLevel, "reginal_data", false, function () {
+                var users = $('#reginal_data').datagrid('getChecked');
+                if (users.length > 0 && confirm("Reginal will be removed from Reginal list do you confirm them?")) {
+                    $(users).each(function (i, item) {
+                        item.Active = false;
+                    });
+                    $.ajax({
+                        url: '../Study/DeleteTrialRegionals',
+                        type: 'post',
+                        data: { trialRegs: JSON.stringify(users) },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.result) {
+                                alert("Reginal are removed ");
+                                $("#reginal_data").datagrid("clearChecked");
+                                $('#reginal_data').datagrid('reload');
+                                $('#member_data').datagrid('reload');
+                            } else {
+                                alert("There are some errors in this operation ");
+                            }
 
-                    },
-                    error: function (data) {
-                        alert(data);
-                    }
-                });
-            }
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });
+                }
+            });
         }
         ,
         Edit: function () {
@@ -506,18 +625,31 @@ com.StudyController = function () {
                 user = com.common.GetEditItem("list_data");
                 title = "Edit";
             }
-            $("#userform").form('load', user);
+         
             if (user != null) {
                 com.common.openDialog("add_dialog", title, self.Save, self.Cancel, 1024);
                 id = user.Id;
             }
-
+ 
+            self.LoadStudyDatas(user);
+            return user.Id;
+        },
+        LoadStudyDatas: function (user) {
+          
+            if(user.Id>0){
+               
+                $("#userform").form('load', user);
+            }
+            else {
+                $("#userform").form('clear');
+               
+            }
+          
             $('#reginal_data').datagrid({ queryParams: { id: user.Id } });
             $('#member_data').datagrid({ queryParams: { id: user.Id } });
             $('#temlate_data').datagrid({ queryParams: { id: user.Id } });
             $('#site_data').datagrid({ queryParams: { id: user.Id } });
 
-            return user.Id;
         },
         Add: function () {
             self.LoadStudy(true);
@@ -565,6 +697,9 @@ com.StudyController = function () {
                     break;
                 }
             }
+            var edititem = com.common.GetEditItem("list_data");
+            if(edititem!=null)
+            self.BackItem.Study = com.common.GetEditItem("list_data").Id;
         }
         ,
         ManageSite: function () {

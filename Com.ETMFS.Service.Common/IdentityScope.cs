@@ -31,7 +31,8 @@ namespace Com.ETMFS.Service.Common
         public void ConnectShareFolder(string path)
         {
             var config = XMLHelper.GetXMLEntity<ConfigSetting>(path);
-            if (config.HostType == (int)HostType.ShareFolder)
+        
+            if (config!=null&&config.HostType == (int)HostType.ShareFolder)
             {
                 Process proc = new Process();
 

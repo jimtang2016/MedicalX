@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Com.ETMFS.DataFramework;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.Service.Core.ViewModel;
 
 namespace Com.ETMFS.Service.Core.Interfaces
@@ -21,6 +22,6 @@ namespace Com.ETMFS.Service.Core.Interfaces
 
       PageResult<TMFRefernceViewModel> GetTMFModelList(int id, int page, int rows);
 
-     
+      List<TmfNote> GetTMFModelList(int p, TMFFilter condition);
     }
 }

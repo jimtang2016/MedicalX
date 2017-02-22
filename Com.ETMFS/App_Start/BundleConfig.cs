@@ -23,6 +23,12 @@ namespace Com.ETMFS
                  "~/Scripts/MasterData/TMFModel.js"));
             bundles.Add(new ScriptBundle("~/bundles/StudyControllerjs").Include(
                  "~/Scripts/MasterData/StudyController.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/HighCharts").Include(
+             "~/Scripts/highcharts.js", "~/Scripts/highcharts-more.js", "~/Scripts/highcharts-3d.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/Documentjs").Include(
+                 "~/Scripts/MasterData/DocumentController.js", "~/Scripts/MasterData/StudyController.js"));
           
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
