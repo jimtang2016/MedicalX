@@ -37,6 +37,21 @@ namespace Com.ETMFS.Service.Core.ViewModel
         public string Status { get; set; }
      
         public int StudyTemplateId { get; set; }
+        public string DocumentLevel { get; set; }
+        public string ProtocolNumber { get; set; }
+        public string Language { get; set; }
+        public bool? IsCountryShared { get; set; }
+        public bool? IsSiteShared { get; set; }
+        public string SharedCountryIds { get; set; }
+        public string SharedCountryNames { get; set; }
+        public string SharedSiteIds { get; set; }
+        public string SharedSiteNames { get; set; }
+        public DateTime? DocumentDate { get; set; }
+
+        public bool? HasIssue { get; set; }
+        public string IssueLoges { get; set; }
+        public string IssueLogIds { get; set; }
+        public int? TMFId { get; set; }
      
     }
 }

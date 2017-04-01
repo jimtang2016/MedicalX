@@ -8,6 +8,33 @@ Array.prototype.remove = function (val) {
         this.splice(index, 1);
     }
 };
+
+$.extend($.fn.form.methods, {
+    getData: function (jq, params) {
+        var formArray = jq.serializeArray();
+        var oRet = {};
+        for (var i in formArray) {
+            if (typeof (oRet[formArray[i].name]) == 'undefined') {
+                if (params) {
+                    oRet[formArray[i].name] = (formArray[i].value == "true" || formArray[i].value == "false") ? formArray[i].value == "true" : formArray[i].value;
+                }
+                else {
+                    oRet[formArray[i].name] = formArray[i].value;
+                }
+            }
+            else {
+                if (params) {
+                    oRet[formArray[i].name] = (formArray[i].value == "true" || formArray[i].value == "false") ? formArray[i].value == "true" : formArray[i].value;
+                }
+                else {
+                    oRet[formArray[i].name] += "," + formArray[i].value;
+                }
+            }
+        }
+        return oRet;
+    }
+});
+
 String.prototype.FormatDate = function () {
     var temp = "";
     if (this != null && this != undefined && this != "") {
@@ -62,9 +89,24 @@ String.prototype.FormatMinutsDate = function () {
     }
     return temp;
 }
+
 com.common = {
+    AlertText:function(){
+        alert("you have no permission to edit this item");
+    },
     ShowChart: function (el, chartobj) {
         Highcharts.chart(el, chartobj);
+    },
+    formatStatus: function (value, row, index) {
+        var div = "<div style='width:30px;height:30px;background-color:";
+        if (value == "Uploaded") {
+            div = div + "blue";
+        } else if (value == "Reviewed") {
+            div = div + "Green";
+        } else if (value == "Issued") {
+            div = div + "red";
+        }
+        return div + "'></div>";
     },
     Init3dPie:function(optoins,serises){
        var piechart= {
@@ -128,22 +170,38 @@ com.common = {
     }
     ,
     formatdate: function (value, row, index) {
-        return value.FormatDate();
+        if(value!=undefined&&value!=null)
+            return value.FormatDate();
+        else {
+            return value;
+        }
     },
     formatminutdate: function (value, row, index) {
-        return value.FormatMinutsDate();
+        if (value != undefined && value != null)
+            return value.FormatMinutsDate();
+        else {
+            return value;
+        }
     },
     
-    openDialog: function (el, title, funsave, funCancel, width) {
+    openDialog: function (el, title, funsave, funCancel, width,showbuttons,height) {
         if (width == undefined || width == null) {
             width = 400;
         }
-        $("#" + el).dialog({
+        if (showbuttons== undefined || showbuttons== null) {
+            showbuttons = true;
+        }
+        if (height == undefined || height == null) {
+            height = 'auto';
+        } 
+    var options=    {
             title: title,
             modal: true,
             width: width,
-            height: 'auto',
-            buttons: [
+            height: height
+    }
+    if (showbuttons) {
+        options.buttons = [
                 {
                     text: 'OK',
                     iconCls: 'icon-ok',
@@ -154,8 +212,10 @@ com.common = {
                 iconCls: 'icon-cancel',
                 handler: funCancel
             }
-            ]
-        });
+        ];
+    }
+    
+    $("#" + el).dialog(options);
     }
     ,
     closeDialog: function (el) {

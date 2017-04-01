@@ -62,4 +62,29 @@ namespace Com.ETMFS.Service.Core.ViewModel
        
         public string ModifiBy { get; set; }
     }
+
+   public class TMFRefernceOptionViewModel
+   {
+       public int Id { get; set; }
+
+       public string ZoneNo { get; set; }
+
+       public string ZoneName { get; set; }
+
+       public string SectionNo { get; set; }
+
+       public string SectionName { get; set; }
+
+       public string ArtifactNo { get; set; }
+
+       public string ArtifactName { get; set; }
+
+       public string AlternateNames { get; set; }
+       public string Purpose { get; set; }
+       public string IsTrialLevel { get; set; }
+
+       public string IsCountryLevel { get; set; } 
+       public string IsSiteLevel { get; set; }
+       public int StudyTemplateId { get; set; }
+   }
 }

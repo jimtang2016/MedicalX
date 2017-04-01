@@ -20,7 +20,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         [Key]
         public int Id { get; set; }
    
-        public int? ReasonId { get; set; }
+        public string Reason { get; set; }
         public int? DocumentId { get; set; }
         public int? ReviewerId { get; set; }
         [Column(TypeName = "datetime2")]
@@ -28,8 +28,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public string Comments { get; set; }
         [StringLength(200)]
         public string ReviewerName { get; set; }
-     
-        public int Status { get; set; }
+        public string LogNum { get; set; }
+        public string Status { get; set; }
         public bool? Active { get; set; }
 
         [Column(TypeName = "datetime2")]
@@ -55,8 +55,9 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     {
         [Key]
         public int Id { get; set; }
-        public int AssignUserId { get; set; }
-        public int IssueLogId { get; set; }
+        public int? AssignUserId { get; set; }
+        public int? IssueLogId { get; set; }
+        public bool? IsOther { get; set; }
         public virtual Users AssignUser { get; set; }
         public virtual IssueLog IssueLog { get; set; }
     }

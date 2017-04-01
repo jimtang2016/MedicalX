@@ -19,35 +19,45 @@
                     <th data-options="field:'Id'" width="80">Item ID</th>
                     <th data-options="field:'UserName'" width="100">UserName</th>
                     <th data-options="field:'Country',align:'right'" width="80">Country</th>
-
+                    <th data-options="field:'Email'"  width="100">Email</th>
+                     
                 </tr>
             </thead>
         </table>
     </div>
         <div id="add_dialog" class="common-dialog"   data-options="iconCls:'icon-save'">
-               <form id="userform" method="post" >
-                   <input type="hidden" name="Id" />
-                     <input type="hidden" name="Active" />
-                   <table class="dialog-content">
-                       <tr>
-                           <td>
-                               <label  class="textbox-label">User Name</label>
-                           </td>
-                           <td>
-                               <input type="text" name="UserName" />
-                           </td>
-                       </tr>
-                       <tr>
-                           <td>
-                               <label class="textbox-label">Password</label>
-                           </td>
-                           <td>
-                               <input type="text" name="PassWord" />
-                           </td>
-                       </tr>
-                   </table>
+            <form id="userform" method="post" data-options="novalidate:true">
+                <input type="hidden" name="Id" />
+                <input type="hidden" name="Active" />
+                <table class="dialog-content">
+                    <tr>
+                        <td>
+                            <label class="textbox-label">User Name</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="UserName" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Password</label>
+                        </td>
+                        <td>
+                            <input type="password" class="easyui-textbox" name="Password" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Email</label>
+                        </td>
+                        <td>
+                            <input type="email" validtype='email'
+                                   class="easyui-textbox" name="Email" />
+                        </td>
+                    </tr>
+                </table>
 
-               </form>
+            </form>
             <div title="DataGrid" style="padding:5px">
                 <table id="grouplist_data"  >
                     <thead>

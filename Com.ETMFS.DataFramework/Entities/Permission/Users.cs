@@ -11,14 +11,12 @@ namespace Com.ETMFS.DataFramework.Entities.Permission
     public partial class Users
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        ICollection<StudyMember> _studymember = null;
         ICollection<UserGroups> _userGroups = null;
         ICollection<IssueLog> _issueLogs = null;
         ICollection<AssignedUser> _assignedUsers = null;
         public Users()
         {
             LoginHistory = new HashSet<LoginHistory>();
-            _studymember = new HashSet<StudyMember>();
             _userGroups = new HashSet<UserGroups>();
             _issueLogs = new HashSet<IssueLog>();
             _assignedUsers = new HashSet<AssignedUser>();
@@ -47,6 +45,9 @@ namespace Com.ETMFS.DataFramework.Entities.Permission
         [StringLength(100)]
         public string CreateBy { get; set; }
 
+        [StringLength(100)]
+        public string Email { get; set; }
+        
         [Column(TypeName = "datetime2")]
         public DateTime? Modified { get; set; }
 
@@ -59,7 +60,7 @@ namespace Com.ETMFS.DataFramework.Entities.Permission
         public virtual ICollection<LoginHistory> LoginHistory { get; set; }
 
         public virtual ICollection<UserGroups> UserGroups { get { return _userGroups; } }
-        public virtual ICollection<StudyMember> StudyMember { get { return _studymember; } }
+  
 
         public virtual ICollection<IssueLog> IssueLogs { get { return _issueLogs; } }
         public virtual ICollection<AssignedUser> AssignedUsers { get { return _assignedUsers; } }

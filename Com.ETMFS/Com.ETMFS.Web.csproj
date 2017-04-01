@@ -544,6 +544,7 @@
     <Content Include="Scripts\Permission\AppConfigSetting.js" />
     <Content Include="Scripts\Permission\Group.js" />
     <Content Include="Setting\AppConfig.xml" />
+    <Content Include="Setting\EmailConfig.xml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -562,6 +563,7 @@
     <Folder Include="Areas\Permission\Models\" />
     <Folder Include="Areas\Permission\Views\Shared\" />
     <Folder Include="Models\" />
+    <Folder Include="TempFiles\" />
     <Folder Include="Upload\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>

@@ -33,8 +33,11 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public int? SiteId { get; set; }
         public int? CountryId { get; set; }
         public bool? Active { get; set; }
-        public string Status { get; set; }
-       
+
+        public bool? HasIssue { get; set; }
+        public string IssueLoges { get; set; }
+        public string IssueLogIds { get; set; }
+
         [Column(TypeName = "datetime2")]
         public DateTime? Created { get; set; }
         [StringLength(100)]
@@ -43,9 +46,26 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public DateTime? Modified { get; set; }
         [StringLength(100)]
         public string ModifiBy { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? DocumentDate { get; set; }
+        public string Status { get; set; }
+        public string DocumentLevel { get; set; }
+        public string ProtocolNumber { get; set; }
+        public string Language { get; set; }
+        public bool? IsCountryShared { get; set; }
+        public bool? IsSiteShared { get; set; }
+        public string SharedCountryIds { get; set; }
+        public string SharedCountryNames { get; set; }
+        public string SharedSiteIds { get; set; }
+        public string SharedSiteNames { get; set; }
+        public string TMFType { get; set; }
         public StudyTemplate StudyTemplate { get; set; }
+
         public virtual ICollection<StudyDocumentHistory> StudyDocumentHistory { get { return studydocument; } }
-        public ICollection<IssueLog> IssueLogs { get { return _issuelogs; } }
+        public virtual ICollection<IssueLog> IssueLogs { get { return _issuelogs; } }
+
+
     }
 
    

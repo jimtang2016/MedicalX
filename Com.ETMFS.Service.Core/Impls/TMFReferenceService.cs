@@ -38,17 +38,8 @@ namespace Com.ETMFS.Service.Core.Impls
                {
 
                    var studylist = _studycontext.GetUserStudyList(p).FirstOrDefault(from => from.Id == condition.Study);
-                    condition.TMFLevel=Constant.RoleLevel_Trial;
-
-                   if(condition.Country.HasValue){
-                       condition.TMFLevel=Constant.RoleLevel_Country;
-                   }
-                   if(condition.Site.HasValue){
-                       condition.TMFLevel=Constant.RoleLevel_Site;
-                   }
-
                    var tmfsquery = from tmf in _studycontext.GetSutdyTemplates( studylist,condition)
-                              select ConvertStudyTemplates( tmf);
+                       select ConvertStudyTemplates( tmf);
                    tmfs = tmfsquery.ToList();
                }
            }
@@ -132,7 +123,7 @@ namespace Com.ETMFS.Service.Core.Impls
                ArtifactNo = temp.ArtifactNo,
 
                ArtifactName = temp.ArtifactName
-
+                
            };
            return studyveiw;
        }
@@ -152,8 +143,9 @@ namespace Com.ETMFS.Service.Core.Impls
 
                ArtifactNo = temp.TMFTemplate.ArtifactNo,
 
-               ArtifactName = temp.TMFTemplate.ArtifactName
-
+               ArtifactName = temp.TMFTemplate.ArtifactName,
+               RTMId = temp.TMFTemplate.Id
+               
            };
            return studyveiw;
        }

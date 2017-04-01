@@ -17,5 +17,6 @@ namespace Com.ETMFS.Service.Core.ViewModel
        public string OwnerName { set; get; }
        public int? MemberId { set; get; }
        public bool? Active { set; get; }
+       public string Status { get; set; }
     }
 }

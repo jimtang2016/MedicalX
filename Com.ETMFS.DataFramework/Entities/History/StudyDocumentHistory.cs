@@ -36,8 +36,20 @@ namespace Com.ETMFS.DataFramework.Entities.History
         [StringLength(100)]
         public string ModifiBy { get; set; }
         public int? DocumentId { get; set; }
-       
-        
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? DocumentDate { get; set; }
+        public string Status { get; set; }
+        public string DocumentLevel { get; set; }
+        public string ProtocolNumber { get; set; }
+        public string Language { get; set; }
+        public bool? IsCountryShared { get; set; }
+        public bool? IsSiteShared { get; set; }
+        public string SharedCountryIds { get; set; }
+        public string SharedCountryNames { get; set; }
+        public string SharedSiteIds { get; set; }
+        public string SharedSiteNames { get; set; }
+        public string TMFType { get; set; }
         public StudyDocument StudyDocument { get; set; }
     }
 }

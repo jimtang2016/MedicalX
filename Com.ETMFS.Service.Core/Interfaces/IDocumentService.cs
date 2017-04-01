@@ -20,5 +20,7 @@ namespace Com.ETMFS.Service.Core.Interfaces
       DocumentSumView GetUploadConculation(int p, TMFFilter condition);
 
       DocumentSumView GetReviewConculation(int p, TMFFilter condition);
+
+      PageResult<IssueLogViewModel> GetIssueLogs(int page, int rows, int id,bool isAllIssues,string status);
     }
 }

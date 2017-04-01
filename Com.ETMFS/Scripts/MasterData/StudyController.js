@@ -4,35 +4,32 @@
 
 com.StudyController = function () {
     var self = {
-        BackItem: {Study:null,Country:null,Site:null},
-        CurrentItem:{Study:null,Country:null,Site:null},
+        BackItem: { Study: null, Country: null, Site: null },
+        CurrentItem: { Study: null, Country: null, Site: null },
         StudyLevel: "Study",
         CountryLevel: "Country",
         SiteLevel: "Site",
-       
         InitAction: function (IsStudyLevel, EditGrid, IsDelete, callback) {
-           
-         
-            if (IsStudyLevel==self.StudyLevel) {
+            if (IsStudyLevel == self.StudyLevel) {
                 self.CurrentItem.Country = null;
                 self.CurrentItem.Site = null;
                 self.CurrentItem.Study = self.BackItem.Study;
-            }  else 
-            if (IsStudyLevel == self.CountryLevel) {
-                self.CurrentItem.Site = null;
-                self.CurrentItem.Country = self.BackItem.Country;
-                 self.CurrentItem.Study = self.BackItem.Study;
-            } else {
-                self.CurrentItem.Country = self.BackItem.Country;
-                self.CurrentItem.Site = self.BackItem.Site;
-                self.CurrentItem.Study = self.BackItem.Study;
-            }
+            } else
+                if (IsStudyLevel == self.CountryLevel) {
+                    self.CurrentItem.Site = null;
+                    self.CurrentItem.Country = self.BackItem.Country;
+                    self.CurrentItem.Study = self.BackItem.Study;
+                } else {
+                    self.CurrentItem.Country = self.BackItem.Country;
+                    self.CurrentItem.Site = self.BackItem.Site;
+                    self.CurrentItem.Study = self.BackItem.Study;
+                }
 
             if (self.CurrentItem.Study == null) {
                 alert("Please choose a trial");
                 return;
             }
-            if (EditGrid != null && EditGrid!=undefined) {
+            if (EditGrid != null && EditGrid != undefined) {
                 var ets = $("#" + EditGrid).datagrid("getChecked");
                 if (!self.validateSameOwner(ets) && IsDelete) {
                     alert("Selected list contain two or more owner please check");
@@ -41,10 +38,10 @@ com.StudyController = function () {
                 if (ets.length > 0) {
                     var et = ets[0];
                     if (EditGrid == "reginal_data") {
-                       
+
                         self.CurrentItem.Country = et.CountryId;
                     } else if (EditGrid == "site_data") {
-                       
+
                         self.CurrentItem.Site = et.Id;
                         self.CurrentItem.Country = et.CountryId;
                     }
@@ -53,9 +50,9 @@ com.StudyController = function () {
                         self.CurrentItem.Site = et.SiteId;
                     }
                 }
-                }
-               
-            
+            }
+
+
 
             $.ajax({
                 url: "../../MasterData/Study/GetUserPermission",
@@ -67,12 +64,12 @@ com.StudyController = function () {
                     } else {
                         alert("User have no permission to do this operation");
                     }
-             
+
                 }
 
             });
         },
-        validateSameOwner:function(ets){
+        validateSameOwner: function (ets) {
             var temcountryId = 0;
             var hassamecountries = true;
             for (var i = 0; i < ets.length; i++) {
@@ -85,9 +82,6 @@ com.StudyController = function () {
             }
             return hassamecountries;
         },
-
-        
-
         Load: function () {
             this.InitComboBox();
             this.InitStudyGrid();
@@ -230,7 +224,7 @@ com.StudyController = function () {
 
         }
         ,
-        InitSitesGrid:function(){
+        InitSitesGrid: function () {
             com.common.initqueryGrid("site_data", "", '', '../Study/GetStudySites', { id: 0 }, [
 
                  {
@@ -253,7 +247,7 @@ com.StudyController = function () {
             ]);
         },
         Site_Remove: function () {
-            self.InitAction(self.CountryLevel,"site_data",true,
+            self.InitAction(self.CountryLevel, "site_data", true,
             function () {
                 var users = $('#site_data').datagrid('getChecked');
                 if (users.length > 0 && confirm("Sites will be removed from Site list do you confirm them?")) {
@@ -288,14 +282,14 @@ com.StudyController = function () {
             var site = { Id: 0, Active: true, Status: "NotSelected", MemberId: 0 };
             self.LoadSite(site);
         },
-        LoadSite:function(site){
+        LoadSite: function (site) {
             var statusoptoin = {
                 url: "../Study/GetOptionListByParentId/" + 9,
                 valueField: 'OptionValue',
                 textField: 'ENText'
             }
             site.StudyId = $("#Id").val();
-            self.ReginalOptoin.url=self.ReginalOptoin.url.substring(0, self.ReginalOptoin.url.lastIndexOf('/')+1) +site.StudyId;
+            self.ReginalOptoin.url = self.ReginalOptoin.url.substring(0, self.ReginalOptoin.url.lastIndexOf('/') + 1) + site.StudyId;
             $("#site_CountryId").combobox(self.ReginalOptoin);
             $("#site_Status").combobox(statusoptoin);
             $("#site_OwnerId").combobox(self.UserOptoin);
@@ -303,7 +297,7 @@ com.StudyController = function () {
             com.common.openDialog("site_dialog", "Trial Site", self.Site_Save, self.Site_Cancel);
         },
         Site_Edit: function () {
-            self.InitAction(self.CountryLevel, "site_data",false, function () {
+            self.InitAction(self.CountryLevel, "site_data", false, function () {
                 var site = com.common.GetEditItem("site_data");
                 self.LoadSite(site);
             });
@@ -319,6 +313,8 @@ com.StudyController = function () {
                         $('#site_data').datagrid("reload");
                         $("#siteform").form("clear");
                         com.common.closeDialog("site_dialog");
+                    } else {
+                        alert(d.message);
                     }
                 },
                 error: function (data) {
@@ -337,10 +333,10 @@ com.StudyController = function () {
                 com.common.openDialog("tmf_dialog", "Trial Model Reference", self.Template_Save, self.Template_Cancel, 800);
                 $('#alltemlate_data').datagrid({ queryParams: { id: studyId } });
             });
-          
+
         },
         Template_Remove: function () {
-            self.InitAction(self.StudyLevel, "#temlate_data", true, function () {
+            self.InitAction(self.StudyLevel, "temlate_data", true, function () {
                 var templists = $("#temlate_data").datagrid("getChecked");
                 self.Temlate_onSave(templists, true, []);
             });
@@ -388,17 +384,20 @@ com.StudyController = function () {
         Template_Cancel: function () {
             com.common.closeDialog("tmf_dialog");
         },
-          UserOptoin:{
+        UserOptoin: {
             url: "../Study/GetUserList",
             valueField: 'Id',
             textField: 'UserName'
-          },
-            ReginalOptoin : {
-              url: "../Study/GetTrialReginals/" ,
-              valueField: 'CountryId',
-              textField: 'CountryName'
-          },
+        },
+        ReginalOptoin: {
+            url: "../Study/GetTrialReginals/",
+            valueField: 'CountryId',
+            textField: 'CountryName'
+        },
         Member_Load: function (reginal) {
+            if (reginal.Id > 0) {
+                reginal.UserId = reginal.MemberId;
+            }
 
             var roleoptoin = {
                 url: "../Study/GetOptionListByParentId/" + 1,
@@ -414,15 +413,15 @@ com.StudyController = function () {
                     var level = e.OptionValue;
                     if (level == "Site") {
                         $("#mem_CountryId").combobox('enable');
-                        $("#mem_SiteId").combobox('enable');
-                    } else if(level=="Country"){
+                        $("#mems_SiteId").combobox('enable');
+                    } else if (level == "Country") {
                         $("#mem_CountryId").combobox('enable');
-                        $("#mem_SiteId").combobox('disable');
-                        $("#mem_SiteId").combobox('setValue',null);
+                        $("#mems_SiteId").combobox('disable');
+                        $("#mems_SiteId").combobox('setValue', null);
                     } else {
                         $("#mem_SiteId").combobox('disable');
                         $("#mem_CountryId").combobox('disable');
-                        $("#mem_SiteId").combobox('setValue', null);
+                        $("#mems_SiteId").combobox('setValue', null);
                         $("#mem_CountryId").combobox('setValue', null);
                     }
                 }
@@ -435,37 +434,48 @@ com.StudyController = function () {
                 textField: 'CountryName',
                 onSelect:
                     function (data) {
-                        var studyId = $("#Id").val();
-                        var siteoptoin = {
-                            url: "../Study/GetTrialSites/" + studyId + "?countryId" + data.CountryId,
-                            valueField: 'SiteId',
-                            textField: 'SiteName'
-                        }
-                        com.common.Combox("mem_SiteId", siteoptoin);
+                        self.CurrentItem.Country = data.CountryId;
+                        $("#mems_SiteId").combobox("reload");
+
                     }
             }
+
+            var siteoptoinstr = {
+                url: "../Study/GetTrialSites/",
+                valueField: 'Id',
+                textField: 'SiteName',
+                onBeforeLoad: function (param) {
+                    var studyId = $("#Id").val();
+                    param.id = studyId == "" ? 0 : studyId;
+                    param.countryId = self.CurrentItem.Country == "" || self.CurrentItem.Country == null ? 0 : self.CurrentItem.Country;
+
+                },
+                onSelect:
+                   function (data) {
+                       var s = this;
+                   }
+            }
+
             com.common.Combox("mem_OwnerId", self.UserOptoin);
             com.common.Combox("mem_CountryId", teginalOptoin);
-            
-          
 
-
+            com.common.Combox("mems_SiteId", siteoptoinstr);
             com.common.Combox("mem_RoleLevel", roleleveloptoin);
             com.common.Combox("mem_Role", roleoptoin);
-            
             com.common.openDialog("member_dialog", "Trial Member", self.Member_Save, self.Member_Cancel);
             $("#memberform").form("load", reginal);
         },
         Member_Add: function () {
-                var reginal = { Id: 0, Active: true, StudyId: $("#Id").val() };
-                self.Member_Load(reginal);
+            var reginal = { Id: 0, Active: true, StudyId: $("#Id").val() };
+            self.Member_Load(reginal);
         },
         Member_Edit: function () {
             self.InitAction(self.SiteLevel, "member_data", false, function () {
                 var users = com.common.GetEditItem("member_data");
+                users.OldMemberId = users.MemberId;
                 self.Member_Load(users);
             });
-       
+
         },
         Member_Remove: function () {
 
@@ -485,8 +495,7 @@ com.StudyController = function () {
                                 alert("Members are removed ");
                                 $("#member_data").datagrid("clearChecked");
                                 $('#member_data').datagrid('reload');
-                                $('#reginal_data').datagrid('reload');
-                                $('#site_data').datagrid('reload');
+                               
                             } else {
                                 alert("There are some errors in this operation ");
                             }
@@ -498,7 +507,7 @@ com.StudyController = function () {
                     });
                 }
             });
-            
+
         },
         Member_Save: function () {
             if ($("#memberform").form('validate')) {
@@ -522,7 +531,7 @@ com.StudyController = function () {
                 });
             }
 
-            
+
         },
         Member_Cancel: function () {
             $("#memberform").form("clear");
@@ -533,14 +542,14 @@ com.StudyController = function () {
                 var reginal = { Id: 0, Active: true, MemberId: 0 };
                 self.Reginal_Load(reginal);
             });
-          
+
         },
         Reginal_Edit: function () {
-            self.InitAction(self.CountryLevel, "reginal_data",false, function () {
+            self.InitAction(self.CountryLevel, "reginal_data", false, function () {
                 var reginal = com.common.GetEditItem("reginal_data");
                 self.Reginal_Load(reginal);
             });
-          
+
         },
         Reginal_Load: function (reginal) {
             var countyoptoin = {
@@ -548,8 +557,13 @@ com.StudyController = function () {
                 valueField: 'Id',
                 textField: 'CountryName'
             }
+            var ddoptoin = {
+                url: "../Study/GetOptionListByParentId/" + 27,
+                valueField: 'OptionValue',
+                textField: 'ENText'
+            }
             com.common.Combox("CountryId", countyoptoin);
-            com.common.Combox("OwnerId", self.UserOptoin);
+            com.common.Combox("OwnerId", ddoptoin);
             reginal.StudyId = $("#Id").val();
             $("#reginalform").form("load", reginal);
             com.common.openDialog("reginal_dialog", "Trial Reginal", self.Reginal_Save, self.Reginal_Cancel);
@@ -625,26 +639,18 @@ com.StudyController = function () {
                 user = com.common.GetEditItem("list_data");
                 title = "Edit";
             }
-         
+
             if (user != null) {
                 com.common.openDialog("add_dialog", title, self.Save, self.Cancel, 1024);
                 id = user.Id;
             }
- 
+
             self.LoadStudyDatas(user);
             return user.Id;
         },
         LoadStudyDatas: function (user) {
-          
-            if(user.Id>0){
-               
-                $("#userform").form('load', user);
-            }
-            else {
-                $("#userform").form('clear');
-               
-            }
-          
+
+            $("#userform").form('load', user);
             $('#reginal_data').datagrid({ queryParams: { id: user.Id } });
             $('#member_data').datagrid({ queryParams: { id: user.Id } });
             $('#temlate_data').datagrid({ queryParams: { id: user.Id } });
@@ -698,8 +704,8 @@ com.StudyController = function () {
                 }
             }
             var edititem = com.common.GetEditItem("list_data");
-            if(edititem!=null)
-            self.BackItem.Study = com.common.GetEditItem("list_data").Id;
+            if (edititem != null)
+                self.BackItem.Study = com.common.GetEditItem("list_data").Id;
         }
         ,
         ManageSite: function () {
@@ -729,6 +735,7 @@ com.StudyController = function () {
             var Status = $("#Status").combobox("getValue");
             var Active = $("#Active").val();
             var id = $("#Id").val();
+
             $.ajax({
                 url: "../Study/SaveStudy",
                 data: { study: JSON.stringify({ StudyNum: StudyNum, Id: id, ShortTitle: ShortTitle, Status: Status, Active: Active }) },
@@ -741,7 +748,6 @@ com.StudyController = function () {
                     $('#list_data').datagrid('reload');
                     $('#userform').form('clear');
                     com.common.closeDialog("add_dialog");
-
                 }
                 ,
                 error: function (data) {
@@ -751,6 +757,7 @@ com.StudyController = function () {
             })
         },
         Cancel: function () {
+            $("#temlate_data").datagrid("clearChecked");
             com.common.closeDialog("add_dialog");
         }
     }

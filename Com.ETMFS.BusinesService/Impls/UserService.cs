@@ -8,6 +8,7 @@ using Com.ETMFS.BusinesService.Interfaces;
 using Com.ETMFS.BusinesService.ViewModel;
 using Com.ETMFS.BusinesService.ViewModel.Permission;
 using Com.ETMFS.DataFramework;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.DataFramework.Entities.Permission;
 using Com.ETMFS.DataFramework.Interfaces.Permission;
 using Com.ETMFS.Service.Common;
@@ -26,7 +27,23 @@ namespace Com.ETMFS.BusinesService.Impls
            _unitWork = unitwork;
        }
 
+       public List<UserViewModel> GetDocumentUserList(TMFFilter tmf)
+       {
+           var memlevel = Constant.RoleLevel_Trial;
+           if (tmf.Country != null)
+           {
+               memlevel = Constant.RoleLevel_Country;
+           }
+           if (tmf.Site >0)
+           {
+               memlevel = Constant.RoleLevel_Site;
+           }
 
+           var users = _userRepo.GetAll().Where(f => f.UserGroups.Any(user => user.Active.Value && user.StudyMember.Any(stm=> stm.Study.Id== tmf.Study
+                 && (tmf.Site == null || tmf.Site != null && tmf.Site == stm.SiteId) && stm.RoleLevel == memlevel &&
+                 (tmf.Country == null || tmf.Country != null && tmf.Country == stm.CountryCode)))).ToList();
+          return Common<Users, UserViewModel>.ConvertToViewModel(users);
+       }
 
        #region IUserService Members
 
@@ -90,7 +107,7 @@ namespace Com.ETMFS.BusinesService.Impls
        }
        public List<UserViewModel> GetUserList()
        {
-           var rpage = _userRepo.GetActiveUserList();
+           var rpage = _userRepo.GetActiveUserList().Where(u => !u.UserGroups.Any(f => f.Id == Constant.Group_Administrators)).ToList();
            return Common<Users, UserViewModel>.ConvertToViewModel(rpage);
        }
        #endregion
@@ -140,7 +157,8 @@ namespace Com.ETMFS.BusinesService.Impls
               UserName = userv.UserName,
               IsMainContact = true,
               Password = userv.Password,
-              Country = userv.Country
+              Country = userv.Country,
+              Email=userv.Email
           };
           if (userv.Id == 0)
           {

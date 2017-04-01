@@ -19,6 +19,7 @@ namespace Com.ETMFS.BusinesService.ViewModel.Permission
       public int Id { set; get; }
       public string UserName { set; get; }
       public string Password { set; get; }
+      public string Email { set; get; }
       public string Country { set; get; }
       public string IpAddress { set; get; }
       public string ModifiBy { set; get; }

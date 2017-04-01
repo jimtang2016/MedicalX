@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Com.ETMFS.BusinesService.Interfaces;
+using Com.ETMFS.BusinesService.ViewModel.Permission;
 using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.DataFramework.Entities.Permission;
 using Com.ETMFS.Service.Common;
@@ -11,17 +14,33 @@ using Com.ETMFS.Service.Core.ViewModel;
 
 namespace Com.ETMFS.Areas.MasterData.Controllers
 {
+    class DocumentType
+    {
+    public static string   PPT="PPTX";
+    public static string Excel = "XLSX";
+    public static string Word = "DOCX";
+    public static string Word2003 = "DOC";
+    public static string Excel2003 = "XLS";
+    public static string PPT2003 = "PPT";
+    public static string PDF = "PDF";
+    }
     public class StudyDocumentController : BaseController
     {
         IDocumentService _documentService;
-        public StudyDocumentController(IDocumentService documentService)
+        IUserService _userservice;
+        IStudyService _studyservice;
+        public StudyDocumentController(IDocumentService documentService, IUserService userservice, IStudyService studyservice)
         {
             _documentService = documentService;
+            _userservice = userservice;
+            _studyservice = studyservice;
         }
         // GET: MasterData/StudyDocument
         [LoginFilter]
         public ActionResult Index()
         {
+            ViewBag.CurrentUser = CurUser.UserName;
+            ViewBag.CurrentUserId = CurUser.Id;
             return View();
         }
 
@@ -33,6 +52,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
          DocumentSumView   reviewSum=_documentService.GetReviewConculation( CurUser.Id, condition);
             return Json(new{UploadSum=uploadSum,ReviewSum=reviewSum});
         }
+
+     
 
         [LoginFilter]
         [HttpPost]
@@ -60,7 +81,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
                 splitflag = Constant.Document_WebSplitFlag;
             }
 
-            var path = config.PathURI + splitflag + config.RootFolder + splitflag + tmf.StudyNum;
+            var path = config.PathURI  + config.RootFolder + splitflag + tmf.StudyNum;
 
             if (tmf.Country.HasValue)
             {
@@ -77,7 +98,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         }
          void SaveDocument(TMFFilter tmf,string filename, HttpPostedFileBase file )
         {
-            var config = ControllerContext.HttpContext.Application["ConfigSetting"] as ConfigSetting;
+              
+            var config = FileHelper.GetConfigSetting(Server,ControllerContext.HttpContext.Application);
             string path = GetFilePath(config,tmf, filename);
             var helpers = new FileHelper();
             if (config.HostType == (int)HostType.SharePoint)
@@ -103,31 +125,47 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
                 {
                     if (file != null)
                     {
-                        var splitflag =Constant.Document_TypeSplitFlag;
+                        var splitflag = Constant.Document_TypeSplitFlag;
                         var lastindex = file.FileName.LastIndexOf(splitflag);
                         tmf.DocumentName = file.FileName.Substring(0, lastindex);
                         tmf.DocumentType = file.FileName.Substring(lastindex + 1, file.FileName.Length - lastindex - 1);
                         var filename = tmf.DocumentName + tmf.VersionId
                             + splitflag + tmf.DocumentType;
-                        SaveDocument(tmf, filename,file);
+                        SaveDocument(tmf, filename, file);
                     }
-                  
-                    _documentService.SaveDocument(  tmf,  CurUser.Id,CurUser.UserName );
+
+                    _documentService.SaveDocument(tmf, CurUser.Id, CurUser.UserName);
                 }
                 return Json(new { result = true  });
 
             }
             catch (Exception ex)
             {
-                return Json(new { ex = ex.ToString() });
+                return Json(new {result = false, ex = ex.Message });
             }
 
         }
 
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetStudyListView(int page, int rows)
+        {
+            try
+            {
+                var users = _studyservice.GetStudyListView(CurUser.Id);
+                return Json(users);
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
+      
+        }
         [LoginFilter]
         public FileResult DownloadFile(string tmfilter)
         {
-            var config = ControllerContext.HttpContext.Application["ConfigSetting"] as ConfigSetting;
+            var config = FileHelper.GetConfigSetting(Server, HttpContext.Application);
             try
             {
                 FileHelper helpers = new FileHelper();
@@ -153,7 +191,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             }
             catch (Exception ex)
             {
-                throw (ex);
+                return null;
             }
            
         }
@@ -178,6 +216,86 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         [LoginFilter]
         [HttpPost]
+        public JsonResult GetIssuelogs(int? documentId, int page, int rows, bool?isAllIssues,string status)
+        {
+            if (documentId.HasValue)
+            {
+                var list = _documentService.GetIssueLogs(page, rows, documentId.Value,isAllIssues.Value, status);
+                return Json(new { total = list.Total, rows = list.ResultRows });
+            }
+            else
+            {
+                var list = new List<DocumentViewModel>();
+                return Json(new { total = 0, rows = list });
+            }
+
+        }
+        [LoginFilter]
+        public JsonResult GetDocumentUser(string tmfilter)
+        {
+            var tmf = JsonConverter.Deserialize<TMFFilter>(tmfilter);
+            List<UserViewModel> users = new List<UserViewModel>();
+            if (tmf != null)
+            {
+                users = _userservice.GetDocumentUserList(tmf);
+            }
+            return Json(users);
+        }
+        public JsonResult GetPDFFile(string tmfilter)
+        {
+            var mapfolder="/TempFiles/";
+            var config = FileHelper.GetConfigSetting(Server, HttpContext.Application);
+            try
+            {
+                FileHelper helpers = new FileHelper();
+                byte[] temp;
+                var tmf = JsonConverter.Deserialize<TMFFilter>(tmfilter);
+                var filename = tmf.DocumentName + tmf.VersionId
+                    + Constant.Document_TypeSplitFlag + tmf.DocumentType;
+                string path = GetFilePath(config, tmf, filename);
+                if (config.HostType == (int)HostType.SharePoint)
+                {
+                    temp = helpers.DownloadWebServerFile(path, config);
+                }
+                else
+                {
+                    temp = helpers.DownloadfromFileSystem(path);
+                }
+                var temppath = Server.MapPath(mapfolder);
+                temppath = temppath + filename;
+                using (System.IO.FileStream file = new System.IO.FileStream(temppath, FileMode.OpenOrCreate))
+                {
+                    file.Write(temp, 0, temp.Length);
+                }
+
+                if (tmf.DocumentType.ToUpper() == DocumentType.Word || tmf.DocumentType.ToUpper() == DocumentType.Word2003)
+                {
+                    helpers.ConvertFromWord(temppath, temppath  + ".pdf");
+                }else
+                    if (tmf.DocumentType.ToUpper() == DocumentType.Excel || tmf.DocumentType.ToUpper() == DocumentType.Excel2003)
+                {
+                    helpers.ConvertFromExcel(temppath, temppath+ ".pdf");
+                } if (tmf.DocumentType.ToUpper() == DocumentType.PPT || tmf.DocumentType.ToUpper() == DocumentType.PPT2003)
+                {
+                    helpers.ConvertFromPPT(temppath, temppath + ".pdf");
+                }
+
+                if (tmf.DocumentType.ToUpper() != DocumentType.PDF)
+                {
+                    filename = filename + ".pdf";
+                }
+
+                return Json(new { result = true, url = "http://" + Request.Url.Host + ":" + Request.Url.Port + mapfolder + filename });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message });
+            }
+
+        }
+
+        [LoginFilter]
+        [HttpPost]
         public JsonResult SaveDocument(string tmf)
         {
          
@@ -185,6 +303,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             {
                 if (tmf != null)
                 {
+                    EmailHelper.Current.LoadConfig(Server);
                     List<TMFFilter> tmfs = JsonConverter.Deserialize<List<TMFFilter>>(tmf);
                     tmfs.ForEach(tft =>
                     {
@@ -197,7 +316,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { ex = ex.ToString() });
+                return Json(new {result = false,  ex = ex.Message });
             }
 
         }

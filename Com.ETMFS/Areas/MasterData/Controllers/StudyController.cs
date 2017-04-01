@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Com.ETMFS.BusinesService.Interfaces;
 using Com.ETMFS.DataFramework.Entities.Core;
+using Com.ETMFS.Service.Common;
 using Com.ETMFS.Service.Core.Interfaces;
 using Com.ETMFS.Service.Core.ViewModel;
 
@@ -79,12 +80,37 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         [LoginFilter]
         [HttpPost]
-        public JsonResult GetAllTemplates(int id, int page, int rows)
+        public JsonResult GetUserStudyListView()
+        {
+            try
+            {
+                var studylists = _studyContext.GetStudyListView(CurUser.Id);
+                return Json(studylists);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, data = ex.Message });
+            }
+
+        }
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetAllTemplates(int id,bool? isCountryLevel,int? countryId, int page, int rows)
         {
             if (id > 0)
             {
-                var templates = _tmfservice.GetTMFModelList(id, page, rows);
-                return Json(new { total = templates.Total, rows = templates.ResultRows });
+                if (!isCountryLevel.Value)
+                {
+                    var templates = _tmfservice.GetTMFModelList(id, page, rows);
+                    return Json(new { total = templates.Total, rows = templates.ResultRows });
+                }
+                else
+                {
+                    var templates = _studyContext .GetOutCountryTMFModels(id,countryId.Value, page, rows);
+                    return Json(new { total = templates.Total, rows = templates.ResultRows });
+                }
+                
             }
             else
             {
@@ -97,9 +123,17 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         [HttpPost]
         public JsonResult SaveStudySite(SiteViewModel site)
         {
-            _studyContext.SaveStudySite(site,CurUser.UserName);
-
-            return Json(new { result = true });
+            try
+            {
+                _studyContext.SaveStudySite(site, CurUser.UserName);
+                MappingFolder(site.StudyId);
+                return Json(new { result = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false,message=ex.Message });
+            }
+            
         }
 
 
@@ -123,7 +157,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             {
                 if (id > 0)
                 {
-                    var users = _studyContext.GetStudySites(id, countryId);
+                    var users = _studyContext.GetStudySites(id, countryId,CurUser.Id);
+                   
                     return Json(users);
                 }
                 else
@@ -138,6 +173,52 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         }
 
+
+        public JsonResult GetAllTrialSites(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    var users = _studyContext.GetStudySites(id);
+                    return Json(users);
+                }
+                else
+                {
+                    return Json(string.Empty);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, Message = ex.Message });
+            }
+
+        }
+         
+               [LoginFilter]
+        [HttpPost]
+        public JsonResult GetAllTrialReginals(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    var users = _studyContext.GetTrialRegionals(id);
+                    return Json(users);
+                }
+                else
+                {
+                    return Json(string.Empty);
+                }
+              
+              
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, Message = ex.Message });
+            }
+
+        }
         [LoginFilter]
         [HttpPost]
         public JsonResult GetTrialReginals(int id)
@@ -184,10 +265,19 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         [HttpPost]
         public JsonResult SaveStudyTemplates(int id,string studytemps,string countrys,bool isdel)
         {
-            var list = this.JsonConverter.Deserialize<List<TMFRefernceViewModel>>(studytemps);
-            var temlist = this.JsonConverter.Deserialize<List<int>>(countrys);
-            _studyContext.SaveTemplates(id, list, CurUser.UserName, isdel, temlist);
-            return Json(new { result = true });
+            try
+            {
+                var list = this.JsonConverter.Deserialize<List<TMFRefernceOptionViewModel>>(studytemps);
+                var temlist = this.JsonConverter.Deserialize<List<int>>(countrys);
+                _studyContext.SaveTemplates(id, list, CurUser.UserName, isdel, temlist);
+                MappingFolder(id);
+                return Json(new { result = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false,message=ex.Message });
+            }
+         
         }
 
         [LoginFilter]
@@ -203,11 +293,25 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         [HttpPost]
         public JsonResult SaveStudy(string study)
         {
-            var list = this.JsonConverter.Deserialize<StudyViewModel>(study);
-            _studyContext.SaveStudyList(list, CurUser.UserName);
-            return Json(new { result = true });
+            try
+            {
+                var list = this.JsonConverter.Deserialize<StudyViewModel>(study);
+                var id = _studyContext.SaveStudyList(list, CurUser.UserName);
+                MappingFolder(id);
+                return Json(new { result = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message });
+            }
+           
         }
 
+        void MappingFolder(int? studyId)
+        {
+            var config = FileHelper.GetConfigSetting(Server, ControllerContext.HttpContext.Application);
+            _studyContext.MappingFolders(config, studyId);
+        }
         [LoginFilter]
         [HttpPost]
         public JsonResult GetTrialRegionals(int id,int page,int rows)
@@ -215,6 +319,57 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
             var reginals = _studyContext.GetTrialRegionals(id, page, rows);
             return Json(new { total = reginals.Total, rows = reginals.ResultRows });
+        }
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetTrialRegional(int id, int? countryId)
+        {
+            try
+            {
+                if (countryId != null)
+                {
+                    var reginals = _studyContext.GetTrialRegionals(id);
+                    var regional = reginals.FirstOrDefault(f => f.CountryId == countryId);
+                    return Json(new { result = true, reginal = regional });
+                }
+                else
+                {
+                    return Json(new { result = true });
+                }
+           
+               
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false,message= ex.Message });
+            }
+            
+        }
+
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetTrialSite(int id, int countryId,int? siteId)
+        {
+            try
+            {
+                if (siteId != null)
+                {
+                    var sites = _studyContext.GetStudySites(id, countryId,p:null);
+                    var site = sites.FirstOrDefault(f => f.Id == siteId);
+                    return Json(new { result = true, site = site });
+                }
+                else
+                {
+                    return Json(new { result = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message });
+            }
+
         }
 
         [LoginFilter]
@@ -234,6 +389,23 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
            
         }
+
+
+        [LoginFilter]
+        [HttpPost]
+
+        public JsonResult GetAllTrialTempaltes(TMFFilter codition)
+        {
+            try
+            {
+                var reginals = _studyContext.GetTrialTempaltes(codition);
+                return Json(reginals);
+            }
+            catch (Exception ex)
+            {
+                return Json(string.Empty);
+            }
+        }
         [LoginFilter]
         [HttpPost]
         public JsonResult SaveTrialRegionals(TrialReginalViewModel trialReg)
@@ -241,6 +413,7 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             try
             {
                 _studyContext.SaveTrialRegional(trialReg, CurUser.UserName);
+                MappingFolder(trialReg.StudyId);
                 return Json(new { result = true });
             }catch(Exception ex){
                return Json(new { result = false,Messsage=ex.Message });   
@@ -258,10 +431,10 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         }
         [LoginFilter]
         [HttpPost]
-       public JsonResult GetMembers(int id,int page,int rows){
+       public JsonResult GetMembers(int id,int page,int rows,int? countryId,int? siteId){
            try
            {
-               var users = _studyContext.GetStudyMembers(id, page, rows);
+               var users = _studyContext.GetStudyMembers(id, page, rows, countryId, siteId);
                return Json(new { total = users.Total, rows = users.ResultRows });
            }
            catch (Exception ex)

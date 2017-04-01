@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Com.ETMFS.BusinesService.ViewModel.Permission;
+using Com.ETMFS.Service.Common;
 
 namespace Com.ETMFS.Areas
 {
@@ -17,7 +18,10 @@ namespace Com.ETMFS.Areas
         {
             get { return _curuser = Session["User"] as UserViewModel; }
         }
-
+         public BaseController()
+         {
+           
+         }
          public JavaScriptSerializer JsonConverter
          {
              get{return _scriptconventor;}

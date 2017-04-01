@@ -39,19 +39,38 @@ namespace Com.ETMFS.DataFramework.Impls.Core
            return temp;
        }
 
+
+ public PageResult<IssueLog> GetDocumentIssueList(PageResult<IssueLog> pagein, int id,bool isAllIssues,string status)
+       {
+           var document = Dbset.Find(id);
+
+           var temps = document.IssueLogs.Where(f => isAllIssues || (!isAllIssues && f.Status == status)).ToList();
+           pagein.Total = temps.Count;
+           pagein.ResultRows =temps
+               .OrderByDescending(f => f.Modified)
+               .Skip(pagein.SkipCount).Take(pagein.PageSize).ToList();
+           return pagein;
+       }
     public   List<DocumentView> LoadDocumentList(int p, TMFFilter condition)
        {
-              var list = DataContext.DocumentView.Where(f=>f.UploaderId==p
-               &&(!condition.Country.HasValue||condition.Country==f.CountryId)
-               && (!condition.Site.HasValue || condition.Site == f.SiteId)
+              var list = DataContext.DocumentView.Where(f=> (
+                    (!condition.Country.HasValue||condition.Country==f.CountryId)||
+                 !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedCountryIds.Contains(condition.Country.Value.ToString())
+                  )
+                 &&
+                  
+                   (!condition.Site.HasValue || (condition.Site == f.SiteId||
+                    condition.Site.HasValue &&
+                !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedSiteIds.Contains(condition.Site.Value.ToString())
+                  )) 
                && (!condition.Study.HasValue || condition.Study == f.StudyId)
-               && (!condition.TMFId.HasValue || condition.TMFId == f.StudyTemplateId)
+               && (!condition.TMFId.HasValue || condition.TMFId == f.TMFId)
                && (string.IsNullOrEmpty(condition.SectionNo) || condition.SectionNo == f.SectionNo)
                && (string.IsNullOrEmpty(condition.ZoneNo) || condition.ZoneNo == f.ZoneNo)
                && (string.IsNullOrEmpty(condition.ArticleNo) || f.ArtifactNo.Contains(condition.ArticleNo))
                && (string.IsNullOrEmpty(condition.DocumentName) || f.DocumentName.Contains(condition.DocumentName))
               && (string.IsNullOrEmpty(condition.ArticleName) || f.ArtifactName.Contains(condition.ArticleName))
-               ).ToList();
+               ).OrderByDescending(f=>f.Id).ToList();
 
               return list;
         }

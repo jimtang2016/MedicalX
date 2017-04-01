@@ -18,6 +18,6 @@ namespace Com.ETMFS.DataFramework.Interfaces.Core
 
         List<DocumentView> LoadDocumentList(int p, TMFFilter condition);
 
-     
+        PageResult<IssueLog> GetDocumentIssueList(PageResult<IssueLog> pagein, int id,bool isAllIssues,string status);
     }
 }

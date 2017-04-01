@@ -5,86 +5,142 @@
  
 @Scripts.Render("~/bundles/AppConfigSettingjs")
 <script type="text/javascript" language="javascript">
-    var data = {}
+    
     $(document.body).ready(function(){
         var configcontrol=new configController();
-        configcontrol.Load(data);
+        configcontrol.Load();
     });
 </script>
+<style>
+    .textbox-label{
+        width:100% !important;
+    }
+</style>
+<div style="width: 99%; height: 99%; overflow: hidden; " id="myaccrdion"  >
+                    
+    <div title="File Store Configuration" icon="icon-sys" style="padding-left: 20px">
+            <form id="cofigform" method="post">
+                <table>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">PathURI</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="PathURI"
+                                   id="PathURI" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Root Folder</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="RootFolder"
+                                   id="RootFolder" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Host Type</label>
+                        </td>
+                        <td>
+                            <select class="combobox" panelheight="auto" name="HostType"
+                                    id="HostType" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">User Id</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="UserId"
+                                   id="UserId" />
+                        </td>
+                    </tr>
 
-<div id="configpanel">
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Password</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="Password" id="Password" />
+                        </td>
+                    </tr>
 
-    <form id="cofigform" method="post">
-        <table>
-            <tr>
-                <td>
-                    <label class="textbox-label">PathURI</label>
-                </td>
-                <td>
-                    <input type="text" class="easyui-textbox" name="PathURI"
-                           id="PathURI" data-options="required:true" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="textbox-label">Root Folder</label>
-                </td>
-                <td>
-                    <input type="text" class="easyui-textbox" name="RootFolder"
-                           id="RootFolder" data-options="required:true" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="textbox-label">Host Type</label>
-                </td>
-                <td>
-                    <select class="combobox" panelheight="auto" name="HostType"
-                            id="HostType" data-options="required:true" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label class="textbox-label">User Id</label>
-                </td>
-                <td>
-                    <input type="text" class="easyui-textbox" name="UserId"
-                           id="UserId" />
-                </td>
-            </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Domain</label>
+                        </td>
+                        <td>
+                            <input type="text" class="easyui-textbox" name="Domain"
+                                   id="Domain" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button type="button" class="loginbutton" onclick="configController.Save()">Save</button></td>
+                        <td>
+                            <button type="button" class="loginbutton" onclick="configController.MappingFolders()">Mapping Folders</button>
+                        </td>
+                    </tr>
+                </table>
 
-            <tr>
-                <td>
-                    <label class="textbox-label">Password</label>
-                </td>
-                <td>
-                    <input type="text" class="easyui-textbox" name="Password" id="Password" />
-                </td>
-            </tr>
+            </form>
+        </div>
+    <div title="Email Setting" icon="icon-sys" style="padding-left: 20px">
+        <form id="EmailConfig" method="post">
+            <table>
+                <tr>
+                    <td><label class="textbox-label">Host</label></td>
+                    <td><input type="text" name="Server" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
+                <tr>
+                    <td><label class="textbox-label">Port</label></td>
+                    <td><input type="text" name="Port" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
 
-            <tr>
-                <td>
-                    <label class="textbox-label">Domain</label>
-                </td>
-                <td>
-                    <input type="text" class="easyui-textbox" name="Domain"
-                           id="Domain" />
-                </td>
-            </tr>
-            <tr>
-                <td><button type="button" class="loginbutton" onclick="configController.Save()">Save</button></td>
-                <td>
-                    <button type="button" class="loginbutton" onclick="configController.MappingFolders()">Mapping Folders</button>
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    <td><label class="textbox-label">Use SSL</label></td>
+                    <td><input type="radio" value="true" name="UseSSL"  class="easyui-radio"/> <label>是</label>
+                        <input type="radio" value="false" name="UseSSL" class="easyui-radio" /><label>否</label>
+                    
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="textbox-label">User Name</label></td>
+                    <td><input type="text" name="UserName" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
 
-    </form>
+                <tr>
+                    <td><label class="textbox-label">Password</label></td>
+                    <td><input type="password" name="Password" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
+                <tr>
+                    <td><label class="textbox-label">Subject</label></td>
+                    <td><input type="text" name="Subject" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
 
-   
-</div>
+                <tr>
+                    <td><label class="textbox-label">From</label></td>
+                    <td><input type="text" name="From" class="easyui-textbox" data-options="required:true" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label class="textbox-label">Issue Template</label></tdcolspan>
+                </tr>
+                <tr>
+                    <td colspan="2"><textarea name="IssueTemplate" class="textbox" style="height:200px;width:500px"></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label class="textbox-label">Permission Template</label></td>
+                </tr>
+                <tr>
 
-<div id="tt">
-    <a href="#" class="icon-add" onclick="javascript:alert('add')"></a>
-    <a href="#" class="icon-edit" onclick="javascript:alert('edit')"></a>
-</div>
+                    <td colspan="2"><textarea name="PermissionTemplate" class="textbox" style="height:200px;width:500px"></textarea></td>
+                </tr>
+            </table>
+            <div style="float:right;padding-right:20px">
+              <button type="button" class="loginbutton" onclick="configController.SaveEmailConfig()">Save</button> 
+            </div>
+        </form>
+    </div>
+    </div>
+  

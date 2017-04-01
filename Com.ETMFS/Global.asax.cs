@@ -19,10 +19,7 @@ namespace Com.ETMFS
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             UnityWebActivator.Start();
-            IdentityScope.Context.ConnectShareFolder(Server.MapPath(ConfigList.ConfigXMLPath));
-            Constant.InitContentLib();
-            var config = XMLHelper.GetXMLEntity<ConfigSetting>(Server.MapPath(ConfigList.ConfigXMLPath));
-            Application.Add("ConfigSetting", config);
+            
         }
 
        

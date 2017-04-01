@@ -16,7 +16,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
 
         public int StudyId { get; set; }
         public int? SiteId { get; set; }
-        public int MemberId { get; set; }
+   
         [StringLength(100)]
         public string Role { get; set; }
         [StringLength(100)]
@@ -39,13 +39,31 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public string ModifiBy { get; set; }
         [NotMapped]
         public string MemberName { get; set; }
-         [NotMapped]
+      
         public string CountryName { get; set; }
-         [NotMapped]
+       
         public string SiteName { get; set; }
         public virtual Study Study { get; set; }
-        public virtual Users User { get; set; }
-        [NotMapped]
-        public int? OwnerId { get; set; }
+        public virtual UserGroups UserGroup { get; set; }
+        public int? GroupId { get; set; }
+    }
+
+    [Table("TrialMemberView")]
+    public partial class TrialMemberView
+    {
+        public int StudyId { get; set; }
+        public string StudyNum { get; set; }
+        public int Id { get; set; }
+        public int StudyMemId { get; set; }
+        
+        public int? CountryCode { get; set; }
+        public string Role { get; set; }
+        public string RoleLevel { get; set; }
+        public int? SiteId { get; set; }
+        public bool? Active { get; set; }
+        public string MemberName { get; set; }
+        public int MemberId { get; set; }
+        public string CountryName { get; set; }
+        public string SiteName { get; set; }
     }
 }

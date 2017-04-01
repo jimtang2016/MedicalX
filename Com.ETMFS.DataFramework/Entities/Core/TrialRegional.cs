@@ -32,5 +32,9 @@ namespace Com.ETMFS.DataFramework.Entities.Core
 
         [StringLength(100)]
         public string ModifiBy { get; set; }
+
+         [StringLength(100)]
+        public string Status { get; set; }
+        
     }
 }

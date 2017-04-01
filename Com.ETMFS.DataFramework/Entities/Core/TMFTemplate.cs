@@ -77,6 +77,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public DateTime? Modified { get; set; }
         [StringLength(100)]
         public string ModifiBy { get; set; }
+       
 
         public virtual ICollection<StudyTemplate> StudyTemplate { get { return _studytemplate; } }
     }

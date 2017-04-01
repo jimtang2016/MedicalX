@@ -5,22 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Com.ETMFS.BusinesService.ViewModel.Permission;
 using Com.ETMFS.DataFramework;
+using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.DataFramework.Entities.Permission;
 
 namespace Com.ETMFS.BusinesService.Interfaces
 {
-  public  interface IUserService
+    public interface IUserService
     {
-      UserViewModel LogIn(string userId, string password,string ipAddress);
+        UserViewModel LogIn(string userId, string password, string ipAddress);
 
-      bool LogOff(UserViewModel user);
+        bool LogOff(UserViewModel user);
 
-      PageResult<UserViewModel> GetUserList(int currentPage, int pageSize, string searchConditions);
+        PageResult<UserViewModel> GetUserList(int currentPage, int pageSize, string searchConditions);
 
-      void SaveUser(UserViewModel user);
-      List<UserViewModel> GetUserList();
-      void RemoveUsers(List<UserViewModel> useres,string curuser);
+        void SaveUser(UserViewModel user);
 
-      PageResult<UserGroupViewModel> GetGroupsByUserId(int page, int rows, int id);
+        List<UserViewModel> GetUserList();
+
+        void RemoveUsers(List<UserViewModel> useres, string curuser);
+
+        PageResult<UserGroupViewModel> GetGroupsByUserId(int page, int rows, int id);
+
+        List<UserViewModel> GetDocumentUserList(TMFFilter tmfilter);
     }
 }

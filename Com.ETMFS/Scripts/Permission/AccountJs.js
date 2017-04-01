@@ -123,6 +123,9 @@ com.AccountController = function () {
     self.Save = function () {
             $('#userform').form('submit', {
                 url: "../account/SaveUser",
+                onSubmit:function(){
+                    return $(this).form('enableValidation').form('validate');
+                },
                 success: function (data) {
                   var data1= JSON.parse(data);
                   if (data1.result) {

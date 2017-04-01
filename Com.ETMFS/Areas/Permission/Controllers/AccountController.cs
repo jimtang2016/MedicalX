@@ -51,6 +51,7 @@ namespace Com.ETMFS.Areas.Permission.Controllers
          }
 
             [HttpPost]
+         [LoginFilter]
             public JsonResult SaveUser(UserViewModel user)
             {
                 try

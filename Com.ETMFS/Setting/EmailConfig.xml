@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<EmailConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Server>smtp.qq.com</Server>
+  <UserName>675040512@qq.com</UserName>
+  <Password>tangjian*456</Password>
+  <IssueTemplate>{0} {1} {2}</IssueTemplate>
+  <PermissionTemplate>{0} {1}</PermissionTemplate>
+  <Subject>ETMF  Reminder</Subject>
+  <Port>25</Port>
+  <UseSSL>true</UseSSL>
+  <From>675040512@qq.com</From>
+</EmailConfig>

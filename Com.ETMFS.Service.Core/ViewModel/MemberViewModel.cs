@@ -10,6 +10,7 @@ namespace Com.ETMFS.Service.Core.ViewModel
     {
         public int Id { get; set; }
         public int StudyId { get; set; }
+        public int StudyMemId { get; set; }
         public int MemberId { get; set; }
         public string  MemberName { get; set; }
         public string CountryName { get; set; }
@@ -20,6 +21,6 @@ namespace Com.ETMFS.Service.Core.ViewModel
         public int? CountryCode { get; set; }
         public string OperatorId { get; set; }
         public bool? Active { get; set; }
-        public int? OwnerId { get; set; }
+        public int? UserId { get; set; }  
     }
 }

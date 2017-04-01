@@ -31,15 +31,31 @@ namespace Com.ETMFS.DataFramework.Entities.Core
       public string TMFLevel { get; set; }
       public int? StudyTemplateId { get; set; }
       public IssueLogViewModel IssueLogViewModel { get; set; }
+      public string DocumentLevel { get; set; }
+      public string ProtocolNumber { get; set; }
+      public string Language { get; set; }
+      public bool? IsCountryShared { get; set; }
+      public bool? IsSiteShared { get; set; }
+      public string SharedCountryIds { get; set; }
+      public string SharedCountryNames { get; set; }
+      public string SharedSiteIds { get; set; }
+      public string SharedSiteNames { get; set; }
+      public string DocumentDate { get; set; }
+      public string TMFType { get; set; }
+      public string IssueLoges { get; set; }
+      public bool? HasIssue { get; set; }
+      public string IssueLogIds { get; set; }
     }
 
   public partial class IssueLogViewModel
   {
       public int Id { get; set; }
       public int ReviewerId { get; set; }
-      public int ReasonId { get; set; }
+      public string ReviewName { get; set; }
+      public string LogNum { get; set; }
+      public string Reason  { get; set; }
       public int DocumentId { get; set; }
-      public int Status { get; set; }
+      public string Status { get; set; }
       public string ReviewDate { get; set; }
       public string Comments { get; set; }
       public bool? Active { get; set; }
@@ -48,6 +64,10 @@ namespace Com.ETMFS.DataFramework.Entities.Core
       public DateTime? Modified { get; set; }
       public string ModifiBy { get; set; }
       public string AssignedUsers{get;set;}
+      public string AssignUserIds { get; set; }
+      public string OthersUsers { get; set; }
+      
+      
   }
 
 

@@ -42,6 +42,24 @@ namespace Com.ETMFS.Areas.Permission.Controllers
         }
 
 
+         public JsonResult GetEmailConfig()
+         {
+             try
+             {
+                 var path = this.Server.MapPath(ConfigList.EmailConfigXMLPath);
+                 var config = XMLHelper.GetXMLEntity<EmailConfig>(path);
+                 if (config == null)
+                 {
+                     config = new EmailConfig();
+                 }
+                 return Json(new { Result = true, data = config });
+             }
+             catch (Exception ex)
+             {
+                 return Json(new { Result = false, Message = ex.Message });
+             }
+         }
+
         [LoginFilter]
         [HttpPost]
         public JsonResult MappingFolder()
@@ -52,7 +70,7 @@ namespace Com.ETMFS.Areas.Permission.Controllers
                 var config = XMLHelper.GetXMLEntity<ConfigSetting>(path );
                 if (config != null)
                 {
-                    _studyService.MappingFolders(config);
+                    _studyService.MappingFolders(config,null);
                 }
                 return Json(new { Result = true });
             }
@@ -75,6 +93,20 @@ namespace Com.ETMFS.Areas.Permission.Controllers
             catch (Exception ex)
             {
                 return Json(new { Result = false,Message=ex.Message });
+            }
+        }
+
+        public JsonResult SaveEmailConfig(EmailConfig config)
+        {
+            try
+            {
+                var path = this.Server.MapPath(ConfigList.EmailConfigXMLPath);
+                XMLHelper.SaveXMLEntity<EmailConfig>(path, config);
+                return Json(new { Result = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = ex.Message });
             }
         }
     }

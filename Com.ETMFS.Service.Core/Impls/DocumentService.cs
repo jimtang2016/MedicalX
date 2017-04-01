@@ -60,10 +60,80 @@ namespace Com.ETMFS.Service.Core.Impls
                 Total=pagein.Total
             };
            pageout.ResultRows= Common.Common<DocumentView, DocumentViewModel>.ConvertToViewModel(pagein.ResultRows);
+            
            return pageout;
         }
+        public PageResult<IssueLogViewModel> GetIssueLogs(int page, int rows, int id,bool isAllIssues,string status)
+        {
+            PageResult<IssueLog> pagein = new PageResult<IssueLog>()
+            {
+                PageSize = rows,
+                CurrentPage = page
+            };
+            pagein = _documentRepos.GetDocumentIssueList(pagein, id, isAllIssues, status);
+            PageResult<IssueLogViewModel> pageout = new PageResult<IssueLogViewModel>()
+            {
+                PageSize = rows,
+                CurrentPage = page,
+                Total = pagein.Total
+            };
+            pageout.ResultRows =pagein.ResultRows.Select(s=>ConvertIssuLogView(s)).ToList();
+            return pageout;
+        }
 
+        IssueLogViewModel ConvertIssuLogView(IssueLog log)
+        {
 
+            IssueLogViewModel view = new IssueLogViewModel()
+            {
+                Id = log.Id,
+                Active = log.Active,
+                Comments = log.Comments,
+                Reason = log.Reason,
+                ReviewDate = log.ReviewDate.Value.ToString(Constant.Date_format),
+                DocumentId = log.StudyDocument.Id,
+                ReviewerId =log.Reviewer!=null? log.Reviewer.Id:0,
+                ReviewName = log.Reviewer != null ? log.Reviewer.UserName : string.Empty,
+                Status = log.Status,
+                LogNum=log.LogNum
+            };
+           
+            log.AssignedUsers.ToList().ForEach(u =>
+            {
+                if (u.AssignUser != null)
+                {
+                    if (u.IsOther != null && u.IsOther.Value)
+                    {
+                        if (string.IsNullOrEmpty(view.OthersUsers))
+                        {
+                            view.OthersUsers = u.AssignUser.UserName;
+                        }
+                        else
+                        {
+                            view.OthersUsers = view.OthersUsers + Constant.Document_UserFlag + u.AssignUser.UserName;
+                        }
+
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(view.AssignUserIds))
+                        {
+                            view.AssignUserIds = u.AssignUser.Id.ToString();
+                            view.AssignedUsers = u.AssignUser.UserName;
+                        }
+                        else
+                        {
+                            view.AssignUserIds = view.AssignUserIds + Constant.Document_UserFlag + u.AssignUser.Id.ToString();
+                            view.AssignedUsers = view.AssignedUsers + Constant.Document_UserFlag + u.AssignUser.UserName;
+                        }
+
+                    }
+                }
+               
+                
+            });
+            return view;
+        }
         public PageResult<DocumentViewModel> GetDocumentHistory(int page, int rows, int id)
         {
             PageResult<StudyDocumentHistory> pagein = new PageResult<StudyDocumentHistory>()
@@ -102,13 +172,50 @@ namespace Com.ETMFS.Service.Core.Impls
 
                 
             }
-            document.VersionId = tmf.VersionId;
-            document.UploaderId = userId;
-            document.ModifiBy = userName;
-            document.Modified = DateTime.Now;
-            document.DocumentName = tmf.DocumentName;
-            document.DocumentType = tmf.DocumentType;
-            document.SiteId = tmf.Site;
+            if (tmf.Operation == OperationType.Update || tmf.Operation == OperationType.Create)
+            {
+                document.VersionId = tmf.VersionId;
+                document.UploaderId = userId;
+                document.ModifiBy = userName;
+                document.Modified = DateTime.Now;
+                document.DocumentName = tmf.DocumentName;
+                document.DocumentType = tmf.DocumentType;
+                document.HasIssue = tmf.HasIssue;
+                document.IssueLogIds = tmf.IssueLogIds;
+                document.SiteId = tmf.Site;
+                document.IssueLoges = tmf.IssueLoges;
+                document.DocumentLevel = tmf.DocumentLevel;
+                document.ProtocolNumber = tmf.ProtocolNumber;
+                document.Language = tmf.Language;
+                document.IsCountryShared = tmf.IsCountryShared;
+                document.IsSiteShared = tmf.IsSiteShared;
+                document.SharedCountryIds = tmf.SharedCountryIds;
+                document.SharedCountryNames = tmf.SharedCountryNames;
+                document.SharedSiteIds = tmf.SharedSiteIds;
+                document.SharedSiteNames = tmf.SharedSiteNames;
+                document.CountryId = tmf.Country;
+                document.DocumentDate = DateTime.Parse(tmf.DocumentDate);
+                document.TMFType = tmf.TMFType;
+                if (tmf.HasIssue.HasValue&&tmf.HasIssue.Value)
+                {
+                    if (!string.IsNullOrEmpty(tmf.IssueLogIds))
+                    {
+                        var issues = tmf.IssueLogIds.Split(Constant.Document_UserFlag);
+                        foreach (var issue in issues)
+                        {
+                            var temp=document.IssueLogs.FirstOrDefault(f=>f.Id==int.Parse(issue));
+                            if (temp != null)
+                            {
+                                temp.Status = Constant.TMF_Resolved;
+                                temp.Comments = tmf.Comments;
+                            }
+
+                        }
+                    }
+                }
+            }
+            
+            
             if (tmf.Operation == OperationType.Review)
             {
                 document.Status = DocumentStatus.Reviewed;
@@ -116,36 +223,23 @@ namespace Com.ETMFS.Service.Core.Impls
             else if (tmf.Operation == OperationType.Issued)
             {
                 document.Status = DocumentStatus.Issued;
-                IssueLog issue=new IssueLog(){
-                    DocumentId=document.Id,
-                    ReviewerId=tmf.IssueLogViewModel.ReviewerId,
-                     ReviewerName=userName,
-                      Created=DateTime.Now,
-                      CreateBy=userName,
-                      ModifiBy=userName,
-                      Modified=DateTime.Now,
-                      Active=true,
-                      Comments=tmf.IssueLogViewModel.Comments,
-                    ReasonId = tmf.IssueLogViewModel.ReasonId,
-                    ReviewDate =DateTime.Parse( tmf.IssueLogViewModel.ReviewDate)
-                };
-               var users= tmf.IssueLogViewModel.AssignedUsers.Split(',');
-               foreach (var item in users)
-               {
-                   var user = new AssignedUser()
-                   {
-                       AssignUser = _userRepos.GetById(item),
-                       IssueLog = issue
-                   };
-                   issue.AssignedUsers.Add(user);
-               }
+                var issue = ConvertIssueLog(tmf, userName);
+                issue.StudyDocument = document;
                 document.IssueLogs.Add(issue);
-            }else if(tmf.Operation!= OperationType.Delete){
+                var builder = new StringBuilder();
+                issue.AssignedUsers.ToList().ForEach(user =>
+                {
+                    builder.Append(user.AssignUser.Email + Constant.Document_EmailFlag);
+                });
+         
+                var body = string.Format(EmailHelper.Current.EmailConfig.IssueTemplate, tmf.IssueLogViewModel.Reason, tmf.IssueLogViewModel.ReviewDate, tmf.DocumentId);
+                var receivers = builder.ToString();
+                //EmailHelper.Current.SendEmail(receivers.Substring(0, receivers.Length - 1), string.Empty, body);
+            }
+            else if (tmf.Operation != OperationType.Delete)
+            {
                 document.Status = DocumentStatus.Uploaded;
             }
-           
-           
-            document.CountryId = tmf.Country;
             document.Comments = tmf.Comments;
             document.Active = tmf.Active;
             if (document.Id <= 0)
@@ -154,24 +248,95 @@ namespace Com.ETMFS.Service.Core.Impls
             }
             StudyDocumentHistory dochistory = new StudyDocumentHistory()
             {
-                VersionId = tmf.VersionId,
-                Active = tmf.Active,
+                VersionId = document.VersionId,
+                Active = document.Active,
                 ModifiBy = userName,
                 Modified = DateTime.Now,
-                DocumentName = tmf.DocumentName,
-                DocumentType = tmf.DocumentType,
-                SiteId = tmf.Site,
-                CountryId = tmf.Country,
+                DocumentName = document.DocumentName,
+                DocumentType = document.DocumentType,
+                SiteId = document.SiteId,
+                CountryId = document.CountryId,
                 UploaderId=userId,
-                Comments = tmf.Comments,
+                Comments = document.Comments,
                 CreateBy = userName,
                 Created = DateTime.Now,
                 Operation=tmf.Operation
+                  
             };
+            dochistory.Status = document.Status;
+            dochistory.DocumentLevel = document.DocumentLevel;
+            dochistory.ProtocolNumber = document.ProtocolNumber;
+            dochistory.Language = document.Language;
+            dochistory.IsCountryShared = document.IsCountryShared;
+            dochistory.IsSiteShared = document.IsSiteShared;
+            dochistory.SharedCountryIds = document.SharedCountryIds;
+
+            dochistory.SharedCountryNames = document.SharedCountryNames;
+            dochistory.SharedSiteIds = document.SharedSiteIds;
+            dochistory.SharedSiteNames = document.SharedSiteNames;
+            dochistory.DocumentDate = document.DocumentDate;
             document.StudyDocumentHistory.Add(dochistory);
             _unitwork.Commit();
         }
 
+    public IssueLog ConvertIssueLog(TMFFilter tmf, string userName)
+    {
+        IssueLog issue = new IssueLog()
+        {
+
+            LogNum =Constant.Document_LogPrefix + DateTime.Now.Ticks,
+            ReviewerName = tmf.IssueLogViewModel.ReviewName,
+            Created = DateTime.Now,
+            CreateBy = userName,
+            ModifiBy = userName,
+            Modified = DateTime.Now,
+            Status= tmf.IssueLogViewModel.Status,
+            Active = true,
+            Comments = tmf.IssueLogViewModel.Comments,
+            Reason = tmf.IssueLogViewModel.Reason,
+            ReviewDate = DateTime.Parse(tmf.IssueLogViewModel.ReviewDate)
+        };
+        issue.Reviewer = _userRepos.GetById(tmf.IssueLogViewModel.ReviewerId);
+        var tempusers = new StringBuilder();
+        if (!string.IsNullOrEmpty(tmf.IssueLogViewModel.AssignUserIds))
+        {
+            tempusers.Append(tmf.IssueLogViewModel.AssignUserIds);
+        }
+        if (!string.IsNullOrEmpty(tmf.IssueLogViewModel.OthersUsers))
+        {
+            if (tempusers.Length > 0)
+            {
+                tempusers.Append(Constant.Document_UserFlag + tmf.IssueLogViewModel.AssignUserIds);
+            }
+            else
+            {
+                tempusers.Append(tmf.IssueLogViewModel.AssignUserIds);
+            }
+
+        }
+        var users = tempusers.ToString().Split(Constant.Document_UserFlag);
+        foreach (var item in users)
+        {
+            var signuser = _userRepos.GetAll().FirstOrDefault(u => u.Active.Value && (u.UserName == item || u.Id == int.Parse(item) || u.Email == item));
+            if (signuser != null)
+            {
+                var user = new AssignedUser()
+                {
+                    AssignUser = signuser,
+                    IssueLog = issue,
+                    IsOther = !string.IsNullOrEmpty(tmf.IssueLogViewModel.OthersUsers) && tmf.IssueLogViewModel.OthersUsers.Contains(item)
+                };
+                issue.AssignedUsers.Add(user);
+            }
+            else
+            {
+                throw new Exception("Can't find the AssignUser :" + item);
+            }
+
+        }
+
+        return issue;
+    }
     #region IDocumentService Members
 
 

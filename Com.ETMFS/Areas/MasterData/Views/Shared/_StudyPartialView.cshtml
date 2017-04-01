@@ -62,14 +62,7 @@
                         <select class="combobox easyui-validatebox" data-options="required:true" panelheight="auto" name="CountryId" id="site_CountryId" />
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <label class="textbox-label">Owner</label>
-                    </td>
-                    <td>
-                        <select class="combobox" panelheight="auto" name="OwnerId" id="site_OwnerId" />
-                    </td>
-                </tr>
+             
             </table>
         </form>
     </div>
@@ -80,8 +73,8 @@
         <form id="reginalform" method="post">
             <input type="hidden" name="Id" id="ReginalId" />
             <input type="hidden" name="Active" id="ReginalActive" value="true" />
-            <input type="hidden" name="MemberId" id="MemberId" />
             <input type="hidden" name="StudyId" id="StudyId" />
+         
             <table class="dialog-content">
                 <tr>
                     <td>
@@ -93,10 +86,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <label class="textbox-label">Owner</label>
+                        <label class="textbox-label">Status</label>
                     </td>
                     <td>
-                        <select class="combobox" panelheight="auto" name="OwnerId" id="OwnerId" />
+                        <select class="combobox" panelheight="auto" name="Status" id="OwnerId" />
                     </td>
                 </tr>
             </table>
@@ -109,9 +102,11 @@
 <div id="member_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
     <div title="Trial Member" id="meminfo">
         <form id="memberform" method="post">
-            <input type="hidden" name="Id" id="ReginalId" />
+            <input type="hidden" name="StudyMemId" id="ReginalId" />
             <input type="hidden" name="Active" id="ReginalActive" value="true" />
             <input type="hidden" name="StudyId" id="StudyId" />
+            <input type="hidden" name="UserId"   />
+             
             <table class="dialog-content">
                 <tr>
                     <td>
@@ -151,7 +146,7 @@
                         <label class="textbox-label">Site</label>
                     </td>
                     <td>
-                        <select class="combobox" panelheight="auto" name="SiteId" id="mem_SiteId" />
+                        <input type="text" name="SiteId" id="mems_SiteId" />
                     </td>
                 </tr>
             </table>

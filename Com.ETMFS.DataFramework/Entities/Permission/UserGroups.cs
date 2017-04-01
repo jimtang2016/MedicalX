@@ -5,15 +5,19 @@ namespace Com.ETMFS.DataFramework.Entities.Permission
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using Com.ETMFS.DataFramework.Entities.Core;
 
     [Table("T_UserGroups")]
     public partial class UserGroups
     {
- 
+
+        ICollection<StudyMember> _studymember = null;
+      
         public UserGroups()
         {
             FunctionGroup = new HashSet<FunctionGroup>();
             Users = new HashSet<Users>();
+            _studymember = new HashSet<StudyMember>();
         }
 
         public int Id { get; set; }
@@ -42,5 +46,6 @@ namespace Com.ETMFS.DataFramework.Entities.Permission
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Users> Users { get; set; }
+        public virtual ICollection<StudyMember> StudyMember { get { return _studymember; } }
     }
 }

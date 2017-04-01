@@ -15,5 +15,6 @@ namespace Com.ETMFS.Service.Core.ViewModel
       public string iconCls { set; get; }
       public List<TmfNote> children { get { return _children; } }
       public TMFFilter category { set; get; }
+      public string RoleLevel { set; get; }
     }
 }

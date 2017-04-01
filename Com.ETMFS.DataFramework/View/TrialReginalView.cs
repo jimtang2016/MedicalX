@@ -16,5 +16,7 @@ namespace Com.ETMFS.DataFramework.View
         public string OwnerName { set; get; }
         public int? MemberId { set; get; }
         public bool? Active { set; get; }
+        public string Status { set; get; }
+       
     }
 }

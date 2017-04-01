@@ -14,21 +14,25 @@ namespace Com.ETMFS.DataFramework.Interfaces.Core
         PageResult<Study> GetStudyList(PageResult<Study> pagein);
 
         PageResult<TrialReginalView> GetTrialReginals(int id, PageResult<TrialReginalView> pagein);
- 
 
-        PageResult<StudyMember> GetMemberListById(int id, PageResult<StudyMember> pagein);
+
+        PageResult<TrialMemberView> GetMemberListById(int id, PageResult<TrialMemberView> pagein,int? countryId,int? siteId);
 
         List<TrialRegional> GetTrialCountries(int id);
 
-        PageResult<TMFTemplate> GetTMFRefernceListById(int id, PageResult<TMFTemplate> pagein,int userId);
+        List<StudyListView> GetStudyListView(int p);
+
+        PageResult<TMFTemplate> GetTMFRefernceListById(int id, PageResult<TMFTemplate> pagein, int userId);
 
         PageResult<Site> GetStudySitesById(int id, PageResult<Site> pagein);
 
-        List<Site> GetStudySitesById(int id);
+        List<Site> GetStudySitesById(int id,int? p);
 
         List<Study> GetStudyList();
         List<Study> GetUserStudyList(int userId);
 
-        List<StudyTemplate> GetSutdyTemplates(Study studylist,TMFFilter condition);
+        List<StudyTemplate> GetSutdyTemplates(Study studylist, TMFFilter condition);
+
+        List<StudyTemplate> GetTMFRefernceListById(int id, int p);
     }
 }
