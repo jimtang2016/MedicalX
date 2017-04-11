@@ -9,7 +9,7 @@ namespace Com.ETMFS
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery.min.js", "~/Scripts/jquery.easyui.min.js", "~/Scripts/knockout-3.4.0.js", "~/Scripts/Common.js"));
+                        "~/Scripts/jquery.min.js", "~/Scripts/jquery.easyui.min.js", "~/Scripts/knockout-3.4.0.js", "~/Scripts/Common.js", "~/Scripts/jquery.circliful.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/accountjs").Include(
                         "~/Scripts/Permission/AccountJs.js"));
 

@@ -1,0 +1,522 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutDocument.cshtml";
+}
+@Scripts.Render("~/bundles/Documentjs")
+<script type="text/javascript">
+    var Currentuser = { UserId: '@ViewBag.CurrentUserId', UserName: '@ViewBag.CurrentUser' };
+    $(document).ready(function () {
+
+        var sefl = com.DocumentController();
+        sefl.Load();
+        $(".menuitems").click(function (i, e) {
+            var items = $(this).attr("id");
+
+            if (items.indexOf("study") > -1) {
+                sefl.EditStudyInfo();
+            } else if (items.indexOf("country") > -1) {
+                if (items.indexOf("remove") > -1) {
+                        sefl.RemoveReginals();
+                } else {
+                    sefl.EditCountryInfo();
+                }
+            } else if (items.indexOf("site") > -1) {
+                if (items.indexOf("remove") > -1) {
+                    
+                        sefl.RemoveSite();
+                } else {
+                    sefl.EditSiteInfo();
+                }
+            } else if (items.indexOf("tmf") > -1) {
+                if (items.indexOf("remove") > -1) {
+                    sefl.RemoveTMFModels();
+                } else {
+                    
+                    sefl.EditTMFModels(items.indexOf("county")>-1);
+                }
+            } else if (items.indexOf("user") > -1) {
+                var strs = items.split("_");
+                sefl.EditUserInfos(strs[1]);   
+            }
+        });
+    })
+
+</script>
+
+<style>
+    .textbox-label {
+        width: 100% !important;
+        margin-left: 10px;
+    }
+
+    .docstyle {
+        z-index: 10000;
+        float: left;
+    }
+</style>
+
+
+<div class="easyui-layout" style="height:100%;width:100%">
+
+    <div data-options="region:'north',split:true" style="width:100%;height:200px">
+        <div>
+            <div style="float:left;width:50%">
+                <div class="easyui-panel" title="Trial Info">
+                    <ul id="studyTreeList"></ul>
+
+                    @Html.Partial("_StudyPartialView")
+
+                </div>
+            </div>
+            <div style="float:left;width:50%">
+                <div class="easyui-panel" title="TMF Model Reference">
+                    <ul id="tmflist"></ul>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div data-options="region:'center' ">
+        <table id="list_data">
+            <thead>
+                <tr>
+                    <th data-options="field:'Status',formatter:com.common.formatStatus" sortable="true" width=" 100">Status</th>
+                    <th data-options="field:'ZoneNo'" sortable="true" width="100">ZoneNo</th>
+                    <th data-options="field:'ZoneName'" sortable="true" width=" 200">ZoneName</th>
+                    <th data-options="field:'SectionNo'" sortable="true" width=" 100">SectionNo</th>
+                    <th data-options="field:'SectionName'" sortable="true" width=" 200">SectionName</th>
+                    <th data-options="field:'ArtifactNo'" sortable="true" width=" 100">ArtifactNo</th>
+                    <th data-options="field:'ArtifactName'" sortable="true" width=" 200">ArtifactName</th>
+
+                    <th data-options="field:'StudyNum'" sortable="true" width=" 100">Study Num</th>
+                    <th data-options="field:'CountryName'" sortable="true" width=" 100">Country Name</th>
+                    <th data-options="field:'SiteName'" sortable="true" width=" 100">Site Name</th>
+                    <th data-options="field:'Uploader'" sortable="true" width=" 100">Uploader</th>
+                    <th data-options="field:'ReviewerName'" sortable="true" width=" 100">Reviewer Name</th>
+                    <th data-options="field:'ProtocolNumber'" sortable="true" width=" 100">Protocol Number</th>
+                    <th data-options="field:'DocumentLevel'" sortable="true" width=" 100">Document Level</th>
+                    <th data-options="field:'DocumentType'" sortable="true" width=" 100">Document Type</th>
+                    <th data-options="field:'Language'" sortable="true" width=" 100">Language</th>
+                    <th data-options="field:'IsCountryShared'" sortable="true" width=" 100">Share with Country(ies)</th>
+                    <th data-options="field:'IsSiteShared'" sortable="true" width=" 100">Share with Site(s)</th>
+                    <th data-options="field:'SharedCountryNames'" sortable="true" width="300">Shared Country</th>
+                    <th data-options="field:'SharedSiteNames'" sortable="true" width=" 300">Shared Site</th>
+                    <th data-options="field:'VersionId'" sortable="true" width=" 100">Version</th>
+                    <th data-options="field:'LastModifiedDate',formatter:com.common.formatminutdate" sortable="true" width="200">Last Modified Date</th>
+                    <th data-options="field:'DocumentDate',formatter:com.common.formatminutdate" sortable="true" width="200">Document Date</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div title="Basic Information" class="common-dialog" data-options="iconCls:'icon-save'" id="stbasicinfo">
+    <form id="studyInfo" method="post">
+        <input type="hidden" name="Id" id="Id" />
+        <input type="hidden" name="Active" id="Active" value="true" />
+        <table class="dialog-content">
+            <tr>
+                <td>
+                    <label class="textbox-label">* Study No</label>
+                </td>
+                <td>
+                    <input class="textbox easyui-validatebox" data-options="required:true" type="text" name="StudyNum" id="StudyNum" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="textbox-label">* Short Title</label>
+                </td>
+                <td>
+                    <input class="textbox easyui-validatebox" data-options="required:true" type="text" id="ShortTitle" name="ShortTitle" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="textbox-label">Status</label>
+                </td>
+                <td>
+                    <select class="combobox" panelheight="auto" type="text" id="Status" name="Status" />
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+
+<div id="history_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+    <table id="history_list_data">
+        <thead>
+            <tr>
+                <th data-options="field:'Operation'" width="100">User Operation</th>
+                <th data-options="field:'DocumentName'" width=" 100">Document Name</th>
+                <th data-options="field:'DocumentType'" width=" 100">Document Type</th>
+                <th data-options="field:'VersionId'" width=" 100">Version</th>
+                <th data-options="field:'ModifiBy'" width=" 100">Modified By</th>
+                <th data-options="field:'Modified',formatter:com.common.formatminutdate" width="200">Modified Date</th>
+                <th data-options="field:'Comments'" width="300">Comments</th>
+
+            </tr>
+        </thead>
+    </table>
+
+</div>
+<div id="stmenu" class="easyui-menu docstyle">
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="studymenu_add">
+        Edit Study Info
+    </div>
+    <div data-options="iconCls:'icon-add'" class="menuitems" id="countrymenu_add">
+        Add Country
+    </div>
+    <div data-options="iconCls:'icon-add'" class="menuitems" id="tmfmenu_add">
+        Add Trial Model Reference
+    </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Study">
+        User Management
+    </div>
+</div>
+<div id="countrymenu" class="easyui-menu docstyle">
+
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="countrymenu_edit">
+        Edit Country
+    </div>
+    <div data-options="iconCls:'icon-remove'" class="menuitems" id="countrymenu_remove">
+        Remove Country
+    </div>
+    <div data-options="iconCls:'icon-add'" class="menuitems" id="sitemenu_add">
+        Add Site
+    </div>
+    <div data-options="iconCls:'icon-add'" class="menuitems" id="tmf_countymenu_add">
+        Add Country TMF
+    </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Country">
+        User Management
+    </div>
+</div>
+<div id="sitemenu" class="easyui-menu docstyle">
+
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="sitemenu_edit">
+        Edit Site
+    </div>
+    <div data-options="iconCls:'icon-remove'" class="menuitems" id="sitemenu_remove">
+        Remove Site
+    </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Site">
+        User Management
+    </div>
+</div>
+<div id="tmfmenu" class="easyui-menu docstyle">
+    <div data-options="iconCls:'icon-remove'" class="menuitems" id="tmfmenu_remove">
+        Remove Trial Model Reference
+    </div>
+
+</div>
+<div id="tmfcountryList_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+    <table id="tmfcountryList">
+        <thead>
+            <tr>
+                <th data-options="field:'CountryName'" width="100">Country Name</th>
+                </tr>
+            </thead>
+    </table>
+</div>
+
+   <div id="Issuelog_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+            <table id="issuelog_list_data">
+                <thead>
+                    <tr>
+                        
+                        <th data-options="field:'LogNum'" width="100">IssueLog Num </th>
+                        <th data-options="field:'Reason'" width="300">Reason</th>
+                        <th data-options="field:'Status'" width=" 100">Status</th>
+                        <th data-options="field:'ReviewDate'" width=" 100">Review Date</th>
+                        <th data-options="field:'ReviewName'" width=" 100">Review Name</th>
+                        <th data-options="field:'OthersUsers'" width=" 100">Others Users</th>
+                        <th data-options="field:'AssignedUsers'" width="200">Modified Date</th>
+                        <th data-options="field:'Comments'" width="300">Comments</th>
+
+                    </tr>
+                </thead>
+            </table>
+        </div>
+   <div id="add_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+            <form id="groupform" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="Active" id="Active" />
+                <input type="hidden" name="Operation" id="Operation" />
+                <input type="hidden" name="ZoneNo" id="doc_ZoneNo" />
+                <input type="hidden" name="ArticleNo" id="doc_ArticleNo" />
+                <input type="hidden" name="SectionNo" id="doc_SectionNo" />
+                <input type="hidden" name="StudyTemplateId" />
+                <input type="hidden" name="Study" />
+                <input type="hidden" name="StudyNum" />
+                <input type="hidden" name="CountryName" id="doc_countryname" />
+                <input type="hidden" name="SiteName" id="doc_SiteName" />
+                <table class="dialog-content">
+                    <tr>
+                        <td><label class="textbox-label">Document Selection</label></td>
+                        <td colspan="3"><input type="file" name="file" id="doc_files" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">TMF Model Reference</label>
+                        </td>
+                        <td colspan="3">
+
+                            <input type="text" class="textbox" name="TMFId" id="doc_TMF" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Document Name</label>
+                        </td>
+                        <td>
+                            <input type="hidden" name="DocumentId" />
+                            <input type="text" class="textbox" name="DocumentName" readonly id="doc_Name" />
+                        </td>
+
+                        <td>
+                            <label class="textbox-label">Document Format</label>
+                        </td>
+                        <td>
+
+                            <input type="text" class="textbox" name="DocumentType" readonly id="doc_Format" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Zone  </label>
+                        </td>
+                        <td>
+                            <input class="textbox" name="ZoneName" id="doc_Zone" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Protocol Number</label>
+                        </td>
+                        <td>
+                            <input class="textbox" name="ProtocolNumber" id="doc_ProtocolNumber" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Section  </label>
+                        </td>
+                        <td>
+                            <input class="textbox" name="SectionName" id="doc_Section" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Document Level</label>
+                        </td>
+                        <td>
+                            <input class="textbox" name="DocumentLevel" id="doc_DocumentLevel" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Document Type  </label>
+                        </td>
+                        <td>
+                            <input class="textbox" name="TMFType" id="doc_DocumentType" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Country</label>
+                        </td>
+                        <td>
+                            <input type="text" class="textbox" name="Country" id="doc_country" />
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Document Date</label>
+                        </td>
+                        <td>
+
+                            <input type="text" class="easyui-datebox" name="DocumentDate" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Site</label>
+                        </td>
+                        <td>
+                            <input type="text" class="textbox" name="Site" id="doc_site" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Document Language</label>
+                        </td>
+                        <td>
+
+                            <input type="text" class="textbox" name="Language" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Show With Country(ies)</label>
+                        </td>
+                        <td>
+                            <input type="hidden" name="SharedCountryNames" id="doc_SharedCountryNames" />
+                            <input type="hidden" name="SharedCountryIds" id="doc_hideSharedCountryIds" />
+                            <input type="hidden" name="IsCountryShared" id="doc_hideIsShareCountry" />
+                            <input type="checkbox" id="doc_IsShareCountry" />
+                            <input type="text" id="doc_SharedCountryIds" />
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Document Version</label>
+                        </td>
+                        <td>
+
+                            <input type="text" class="textbox" name="VersionId" />
+                        </td>
+                        <td>
+                            <label class="textbox-label">Show With Site</label>
+                        </td>
+                        <td>
+                            <input type="hidden" name="SharedSiteNames" id="doc_SharedSiteNames" />
+                            <input type="hidden" name="SharedSiteIds" id="doc_hideSharedSiteIds" />
+                            <input type="hidden" name="IsSiteShared" id="doc_hideIsShareSites" />
+                            <input type="checkbox" id="doc_IsShareSites" />
+                            <input type="text" id="doc_SharedSiteIds" />
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Has Issue Log</label>
+                        </td>
+                        <td colspan="3">
+                            <input type="checkbox" id="doc_IsIssueLog"  />
+                            <input type="hidden" name="IssueLogIds" id="doc_IssueLogIds" />
+                            <input type="text" class="textbox" name="IssueLoges" id="doc_IssueLogs" style="width:90%" readonly />
+                            <a href="javascript:void(-1)" class="easyui-linkbutton" disabled  iconcls="icon-search" id="doc_Search" ></a>
+                            <input type="hidden" id="doc_IshiddenIssueLog" name="HasIssue" />
+                          
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label class="textbox-label">Comments</label>
+                        </td>
+                        <td colspan="3">
+
+                            <textarea name="Comments" rows="10" class="textbox" style="height:100px;width:100%"></textarea>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+
+        </div>
+  <div id="reviewe_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
+
+            <div style="width:25%;float:left;height:100%">
+                <div class="easyui-panel" title="Issue Info" style="width:100%;height:100%">
+                    <form id="IssueLogForm" method="post">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span>Any Quality Issue</span>
+                                </td>
+                                <td> <input type="text" class="easyui-validatebox" required="true" name="Reason" id="issue_Reason" /></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span>Comments</span>
+                                </td>
+                                <td><textarea id="issue_Comment" class="textbox" readonly="readonly" style="height:100px" name="Comments"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>Reviewer</span>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="ReviewerId" />
+                                    <input id="issue_Reviewer" name="ReviewName" class="textbox easyui-validatebox" required="true" readonly="readonly" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span>Review Date</span>
+                                </td>
+                                <td><input id="issue_ReviewDate" name="ReviewDate" class="easyui-datebox" /></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span>Assign To</span>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="AssignUsers" id="issue_AssignUserId" />
+                                    <input id="issue_AssignUsers" name="AssignUserIds" class="textbox" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span>Assign To Others</span>
+                                </td>
+                                <td>
+
+                                    <input id="issue_OthersUsers" name="OthersUsers" class="textbox" placeholder="Use [UserId] or [Email] split with ',' in english" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span>Status</span>
+                                </td>
+                                <td>
+
+                                    <input id="issue_Status" name="Status" class="textbox" />
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="float:right;padding-right:5px">
+                            <a href="#" id="btn_Review_doc" class="easyui-linkbutton" iconcls="icon-ok">Accept</a>
+                            <a href="#" id="btn_reject_doc" class="easyui-linkbutton" iconcls="icon-cancel">reject for Revision</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div c style="width:75%;float:left;height:100%">
+                <div class="easyui-panel" title="Document" style="width:100%;height:100%">
+                    <iframe id="documentfile" style="width:98%;height:98%"></iframe>
+                </div>
+            </div>
+        </div>
+
+<div id="memberdialog" class="common-dialog" data-options="iconCls:'icon-save'">
+    <table id="member_list">
+        <thead>
+            <tr>
+                <th data-options="field:'MemberName'" width="100">Member Name</th>
+                <th data-options="field:'CountryName'" width="100">Country Name</th>
+                <th data-options="field:'SiteName'" width="100">Site Name</th>
+                <th data-options="field:'Role'" width="100">Role</th>
+                <th data-options="field:'RoleLevel'" width="100">Role Level</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div style="display:none">
+    <form id="download_form" action="../../MasterData/StudyDocument/DownloadFile"    method="post" >
+        <input type="hidden" id="doc_download_file" name="tmfilter" />
+    </form>
+</div>

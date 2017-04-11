@@ -50,7 +50,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         {
          DocumentSumView   uploadSum=_documentService.GetUploadConculation( CurUser.Id, condition);
          DocumentSumView   reviewSum=_documentService.GetReviewConculation( CurUser.Id, condition);
-            return Json(new{UploadSum=uploadSum,ReviewSum=reviewSum});
+         DocumentSumView   issueSum = _documentService.GetIssuedConculation(CurUser.Id, condition);
+         return Json(new { UploadSum = uploadSum, ReviewSum = reviewSum, IssueSum = issueSum });
         }
 
      

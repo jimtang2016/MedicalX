@@ -534,6 +534,7 @@
     <Content Include="Scripts\highcharts-3d.js" />
     <Content Include="Scripts\highcharts-more.js" />
     <Content Include="Scripts\highcharts.js" />
+    <Content Include="Scripts\jquery.circliful.min.js" />
     <Content Include="Scripts\jquery.easyui.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\MasterData\Country.js" />

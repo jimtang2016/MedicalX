@@ -415,7 +415,18 @@ namespace Com.ETMFS.Service.Core.Impls
         DocumentSumView view = new DocumentSumView()
         {
             Total = list.Count,
-            Done = list.Count(f => f.ReviewId.HasValue)
+            Done = list.Count(f => f.Status == Constant.TMF_Reviewed)
+        };
+        return view;
+    }
+
+    public DocumentSumView GetIssuedConculation(int p, TMFFilter condition)
+    {
+        var list = _documentRepos.LoadDocumentList(p, condition);
+        DocumentSumView view = new DocumentSumView()
+        {
+            Total = list.Count,
+            Done = list.Count(f => f.Status == Constant.TMF_Issued)
         };
         return view;
     }

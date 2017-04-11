@@ -24,6 +24,7 @@ namespace Com.ETMFS.Service.Common
        public static readonly string Group_Split_Flag="{0}|{1}|{2}";
        public static readonly string TMF_BelongFlag = "X";
        public static readonly string TMF_Issued = "Issued";
+       public static readonly string TMF_Reviewed = "Reviewed";
        public static readonly string TMF_Resolved = "Resolved";
        public static readonly string Document_WebSplitFlag = "/";
        public static readonly string Document_FileSplitFlag = "\\";

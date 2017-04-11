@@ -510,40 +510,12 @@ com.DocumentController = function () {
                 data: { condition: self.CurrentTMF },
                 type: 'POST',
                 success: function (data) {
-                    var serise1 = [];
-                    var se1 = {
-                        type: 'pie',
-                        data: []
-                    }
-                    var tooltip = {
-                        pointFormat: '<b>{point.percentage:.1f}%</b>'
-                    }
-                    var datalabel = { enabled: true, format: '{point.name}:{y}' }
-                    se1.data.push({ name: "Uploaded", color: "#eff5ff", y: data.UploadSum.Done, dataLabels: datalabel });
-                    se1.data.push({ name: "Need Uploading", color: "#6b9cde", y: data.UploadSum.Total - data.UploadSum.Done, dataLabels: datalabel });
-                    serise1.push(se1);
-                    var chartobj1 = com.common.Init3dPie({
-                        title: { text: "" }, tooltip: tooltip, enabled: true
-                    }, serise1);
-
-                    com.common.ShowChart("chart_upload", chartobj1);
-
-                    var serise2 = [];
-                    var se2 = {
-                        type: 'pie',
-                        name: 'Reviewed',
-                        data: []
-                    }
-                    se2.data.push({ name: "Reviewed", color: "#eff5ff", y: data.ReviewSum.Done, dataLabels: datalabel });
-                    se2.data.push({ name: "Need Review", color: "#6b9cde", y: data.ReviewSum.Total - data.ReviewSum.Done, dataLabels: datalabel });
-                    serise2.push(se2);
-
-                    var chartobj = com.common.Init3dPie({
-                        title: { text: "" }, tooltip: tooltip, enabled: true
-                    }, serise2);
-
-                    com.common.ShowChart("chart_review", chartobj);
-
+                    var uperctent = data.UploadSum.Done / data.UploadSum.Total*100;
+                    var rpercent = data.ReviewSum.Done / data.ReviewSum.Total * 100;
+                    var ipercent = data.IssueSum.Done / data.IssueSum.Total * 100;
+                    $("#chart_review").circliful({ title: "Reviewed", percent: rpercent, foregroundColor: "green" });
+                    $("#chart_Issued").circliful({ title: "Issueded", percent: ipercent, foregroundColor: "red" });
+                    $("#chart_upload").circliful({ title: "Uploaded", percent: uperctent, foregroundColor: "blue" });
                 }, error: function (e) {
 
                     alert(e)
