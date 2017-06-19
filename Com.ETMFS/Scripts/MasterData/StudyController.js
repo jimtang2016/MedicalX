@@ -8,7 +8,7 @@ com.StudyController = function () {
         CurrentItem: { Study: null, Country: null, Site: null },
         StudyLevel: "Study",
         CountryLevel: "Country",
-        SiteLevel: "Site",
+        SiteLevel: "Site", 
         InitAction: function (IsStudyLevel, EditGrid, IsDelete, callback) {
             if (IsStudyLevel == self.StudyLevel) {
                 self.CurrentItem.Country = null;

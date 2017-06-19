@@ -11,7 +11,13 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     [Table("T_StudySite")]
     public partial class StudySite
     {
-
+        ICollection<MileStone> _milestone;
+        public StudySite()
+        {
+            _milestone = new List<MileStone>();
+        }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int? SiteId { get; set; }
         public int? StudyId { get; set; }
@@ -21,5 +27,6 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         [StringLength(100)]
         public string Status { get; set; }
         public virtual Study Study { get; set; }
+        public virtual ICollection<MileStone> MileStones { get { return _milestone; } }
     }
 }

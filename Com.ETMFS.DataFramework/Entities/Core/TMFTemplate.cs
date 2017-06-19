@@ -18,6 +18,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
 
              _studytemplate = new HashSet<StudyTemplate>();
          }
+         [Key]
+         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [StringLength(500)]
         public string ZoneNo { get; set; }

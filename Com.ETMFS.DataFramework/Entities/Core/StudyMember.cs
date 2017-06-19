@@ -12,6 +12,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     [Table("T_StudyMember")]
     public partial class StudyMember
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public int StudyId { get; set; }

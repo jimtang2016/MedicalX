@@ -11,7 +11,13 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     [Table("T_StudyCountry")]
    public class TrialRegional
     {
+        ICollection<MileStone> _milestone;
+        public TrialRegional()
+        {
+            _milestone = new List<MileStone>();
+        }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { set; get; }
       
         public int? CountryId { set; get; }
@@ -35,6 +41,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
 
          [StringLength(100)]
         public string Status { get; set; }
-        
+
+         public virtual ICollection<MileStone> MileStones { get { return _milestone; } }
     }
 }

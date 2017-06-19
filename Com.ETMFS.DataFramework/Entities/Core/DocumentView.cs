@@ -12,6 +12,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
    public class DocumentView
     {
       [Key]
+      [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       public int Id{get;set;}
       public string DocumentName{get;set;}
       public string DocumentType{get;set;}
@@ -52,5 +53,6 @@ namespace Com.ETMFS.DataFramework.Entities.Core
       public bool? HasIssue { get; set; }
       public string IssueLoges { get; set; }
       public string IssueLogIds { get; set; }
+      public int? ReuploadCount { get; set; }
     }
 }

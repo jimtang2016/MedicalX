@@ -50,22 +50,27 @@
                     </table>
                 </div>
             </div>
-            <div class="easyui-panel" title="Quality" style="width:300px;height:50%">
-                <div style="float:left; width:140px;height:140px">
-                    <div id="chart_review"></div>
-                    <label class="loginlabel" style="margin-left: 10px;">% of Reviewed (#reviewed/#uploaded) </label>
+            <div class="easyui-accordion" data-options="fit:true,border:false">
+                <div   title="Quality"  >
+                    <div style="float:left; width:140px;height:140px">
+                        <div id="chart_review"></div>
+                        <label class="loginlabel" style="margin-left: 10px;">% of Reviewed (#reviewed/#uploaded) </label>
+                    </div>
+                    <div style="float:left; width:140px;height:140px">
+                        <div id="chart_Issued"></div>
+                        <label class="loginlabel" style="margin-left: 10px;">% of Issued (#Issued/#uploaded) </label>
+                    </div>
+
                 </div>
-                <div style="float:left; width:140px;height:140px">
-                    <div id="chart_Issued"  ></div>
-                    <label class="loginlabel" style="margin-left: 10px;">% of Issued (#Issued/#uploaded) </label>
+                <div  title="Completeness"  >
+                    <div id="chart_upload" style="width:200px;height:200px"></div>
+                    <label>% of uploaded  (#uploaded/#need uploaded) </label>
+
+
                 </div>
-                
-            </div>
-            <div class="easyui-panel" title="Completeness" style="width:300px;height:50%">
-                <div id="chart_upload" style="width:200px;height:200px"></div>
-                <label  >% of uploaded  (#uploaded/#need uploaded) </label>
-                
-               
+                <div title="ReUpload List">
+                    <div id="chart_reupload" style="width:300px;height:400px"></div>
+                </div>
             </div>
         </div>
         <div data-options="region:'center' ">

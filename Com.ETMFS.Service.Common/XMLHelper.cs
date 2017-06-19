@@ -11,7 +11,7 @@ namespace Com.ETMFS.Service.Common
 {
    public class XMLHelper
     {
- 
+     
        public static T GetXMLEntity<T>(string path) 
        {
            XmlSerializer xmlser = new XmlSerializer(typeof(T));
@@ -35,6 +35,42 @@ namespace Com.ETMFS.Service.Common
            {
                xmlser.Serialize(stream, t);
            }
+       }
+
+       public static string ConvertEntityXML<T>(T t)
+       {
+           XmlSerializer xmlser = new XmlSerializer(typeof(T));
+           StringBuilder builder = new StringBuilder();
+           using (TextWriter stream = new StringWriter(  builder))
+           {
+               xmlser.Serialize(stream, t);
+               return stream.ToString();
+           }
+          
+       }
+
+       public static T ConvertXMLEntity<T>(string xml)
+       {
+           XmlSerializer xmlser = new XmlSerializer(typeof(T));
+           if (!string.IsNullOrEmpty(xml)){
+               using (TextReader stream = new StringReader(xml))
+               {
+                   var t = (T)xmlser.Deserialize(stream);
+                   if (t != null)
+                   {
+                       return t;
+                   }
+                   else
+                   {
+                       return default(T);
+                   }
+               }
+           }
+           else
+           {
+               return default(T);
+           }
+           
        }
     }
 }

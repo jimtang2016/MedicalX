@@ -39,7 +39,7 @@ namespace Com.ETMFS.DataFramework.Impls.Core
            return temp;
        }
 
-
+       
  public PageResult<IssueLog> GetDocumentIssueList(PageResult<IssueLog> pagein, int id,bool isAllIssues,string status)
        {
            var document = Dbset.Find(id);
@@ -51,29 +51,26 @@ namespace Com.ETMFS.DataFramework.Impls.Core
                .Skip(pagein.SkipCount).Take(pagein.PageSize).ToList();
            return pagein;
        }
-    public   List<DocumentView> LoadDocumentList(int p, TMFFilter condition)
-       {
-              var list = DataContext.DocumentView.Where(f=> (
-                    (!condition.Country.HasValue||condition.Country==f.CountryId)||
-                 !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedCountryIds.Contains(condition.Country.Value.ToString())
-                  )
-                 &&
-                  
-                   (!condition.Site.HasValue || (condition.Site == f.SiteId||
-                    condition.Site.HasValue &&
-                !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedSiteIds.Contains(condition.Site.Value.ToString())
-                  )) 
-               && (!condition.Study.HasValue || condition.Study == f.StudyId)
-               && (!condition.TMFId.HasValue || condition.TMFId == f.TMFId)
-               && (string.IsNullOrEmpty(condition.SectionNo) || condition.SectionNo == f.SectionNo)
-               && (string.IsNullOrEmpty(condition.ZoneNo) || condition.ZoneNo == f.ZoneNo)
-               && (string.IsNullOrEmpty(condition.ArticleNo) || f.ArtifactNo.Contains(condition.ArticleNo))
-               && (string.IsNullOrEmpty(condition.DocumentName) || f.DocumentName.Contains(condition.DocumentName))
-              && (string.IsNullOrEmpty(condition.ArticleName) || f.ArtifactName.Contains(condition.ArticleName))
-               ).OrderByDescending(f=>f.Id).ToList();
+ public List<DocumentView> LoadDocumentList(int p, TMFFilter condition)
+ {
+     var list = DataContext.DocumentView.Where(f => (
+           (!condition.Country.HasValue || condition.Country == f.CountryId) ||
+        !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedCountryIds.Contains(condition.Country.Value.ToString()))
+        && (!condition.Site.HasValue || (condition.Site == f.SiteId ||
+           condition.Site.HasValue &&
+       !string.IsNullOrEmpty(f.SharedSiteIds) && f.SharedSiteIds.Contains(condition.Site.Value.ToString())
+         ))
+      && (!condition.Study.HasValue || condition.Study == f.StudyId)
+      && (!condition.TMFId.HasValue || condition.TMFId == f.TMFId)
+      && (string.IsNullOrEmpty(condition.SectionNo) || condition.SectionNo == f.SectionNo)
+      && (string.IsNullOrEmpty(condition.ZoneNo) || condition.ZoneNo == f.ZoneNo)
+      && (string.IsNullOrEmpty(condition.ArticleNo) || f.ArtifactNo.Contains(condition.ArticleNo))
+      && (string.IsNullOrEmpty(condition.DocumentName) || f.DocumentName.Contains(condition.DocumentName))
+     && (string.IsNullOrEmpty(condition.ArticleName) || f.ArtifactName.Contains(condition.ArticleName))
+      ).OrderByDescending(f => f.Id).ToList();
 
-              return list;
-        }
+     return list;
+ }
     
     }
 }

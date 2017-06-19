@@ -4,8 +4,10 @@ using Com.ETMFS.BusinesService.Interfaces;
 using Com.ETMFS.DataFramework.Entities;
 using Com.ETMFS.DataFramework.Impls.Core;
 using Com.ETMFS.DataFramework.Impls.Permission;
+using Com.ETMFS.DataFramework.Impls.Settings;
 using Com.ETMFS.DataFramework.Interfaces.Core;
 using Com.ETMFS.DataFramework.Interfaces.Permission;
+using Com.ETMFS.DataFramework.Interfaces.Settings;
 using Com.ETMFS.Service.Core.Impls;
 using Com.ETMFS.Service.Core.Interfaces;
 using Microsoft.Practices.Unity;
@@ -53,6 +55,8 @@ namespace Com.ETMFS.App_Start
             container.RegisterType<IUsersRepository, UsersRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IUserGroupsRepository, UserGroupsRepository>(new PerRequestLifetimeManager());
             container.RegisterType<ITMFTemplateRepository, TMFTemplateRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<ISystemSettingService, SystemSettingService>(new PerRequestLifetimeManager());
+            container.RegisterType<ISystemSettingRepository, SystemSettingRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IDocumentRepository, DocumentRepository>(new PerRequestLifetimeManager());
             container.RegisterType<IDocumentService, DocumentService>(new PerRequestLifetimeManager());
             container.RegisterType<IStudyRepository, StudyRepository>(new PerRequestLifetimeManager());
@@ -63,6 +67,7 @@ namespace Com.ETMFS.App_Start
             container.RegisterType<ITMFReferenceService,TMFReferenceService>(new PerRequestLifetimeManager());
             container.RegisterType<IStudyService, StudyService>(new PerRequestLifetimeManager());
             container.RegisterType<IIssuelogRepository, IssuelogRepository>(new PerRequestLifetimeManager());
+            container.RegisterType<INotifyRulesRepository, NotifyRulesRepository>(new PerRequestLifetimeManager());
             
              
         }

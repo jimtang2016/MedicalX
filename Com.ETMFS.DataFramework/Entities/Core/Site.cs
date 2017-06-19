@@ -16,6 +16,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         {
             _studysite = new HashSet<StudySite>();
         }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { set; get; }
         [StringLength(100)]
         public string SiteNum { set; get; }

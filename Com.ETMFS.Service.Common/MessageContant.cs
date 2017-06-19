@@ -13,9 +13,9 @@ namespace Com.ETMFS.Service.Common
 
   public struct ConfigList
   {
-      public  static  readonly string ConfigXMLPath = "/Setting/AppConfig.xml";
+      public  static  readonly string ConfigXMLPath = "AppConfig";
 
-      public static readonly string EmailConfigXMLPath = "/Setting/EmailConfig.xml";
+      public static readonly string EmailConfigXMLPath = "EmailConfig";
   
   }
 }

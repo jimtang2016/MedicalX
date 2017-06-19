@@ -8,6 +8,7 @@ using Com.ETMFS.BusinesService.Interfaces;
 using Com.ETMFS.BusinesService.ViewModel.Permission;
 using Com.ETMFS.DataFramework.Entities.Core;
 using Com.ETMFS.DataFramework.Entities.Permission;
+using Com.ETMFS.DataFramework.Interfaces.Settings;
 using Com.ETMFS.Service.Common;
 using Com.ETMFS.Service.Core.Interfaces;
 using Com.ETMFS.Service.Core.ViewModel;
@@ -29,11 +30,13 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         IDocumentService _documentService;
         IUserService _userservice;
         IStudyService _studyservice;
-        public StudyDocumentController(IDocumentService documentService, IUserService userservice, IStudyService studyservice)
+        ISystemSettingRepository _settingService;
+        public StudyDocumentController(IDocumentService documentService, IUserService userservice, IStudyService studyservice,ISystemSettingRepository settingService)
         {
             _documentService = documentService;
             _userservice = userservice;
             _studyservice = studyservice;
+            _settingService = settingService;
         }
         // GET: MasterData/StudyDocument
         [LoginFilter]
@@ -54,7 +57,14 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
          return Json(new { UploadSum = uploadSum, ReviewSum = reviewSum, IssueSum = issueSum });
         }
 
-     
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetTopDocumentList( TMFFilter condition,int top,int type)
+        {
+            TopType toptype=(TopType)type;
+            var list = _documentService.GetTopTmfDocuments(CurUser.Id, condition, top, toptype);
+            return Json(new {result=true,list=list});
+        }
 
         [LoginFilter]
         [HttpPost]
@@ -72,6 +82,30 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
                 return Json(new { ex=ex.ToString()});
             }
            
+        }
+        string GetFilePath(ConfigSetting config, DocumentViewModel tmf, string filename)
+        {
+
+            var splitflag = Constant.Document_FileSplitFlag;
+            if (config.HostType == (int)HostType.SharePoint)
+            {
+                splitflag = Constant.Document_WebSplitFlag;
+            }
+
+            var path = config.PathURI + config.RootFolder + splitflag + tmf.StudyNum;
+
+            if (!string.IsNullOrEmpty(tmf.CountryName))
+            {
+                path = path + splitflag + tmf.CountryName;
+            }
+            if (!string.IsNullOrEmpty(tmf.SiteName))
+            {
+                path = path + splitflag + tmf.SiteName;
+            }
+
+            path = path + splitflag + tmf.ZoneNo + splitflag + tmf.SectionNo + splitflag + tmf.ArtifactNo + splitflag + filename;
+
+            return path;
         }
         string GetFilePath(ConfigSetting config, TMFFilter tmf,string filename)
         {
@@ -99,8 +133,9 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         }
          void SaveDocument(TMFFilter tmf,string filename, HttpPostedFileBase file )
         {
-              
-            var config = FileHelper.GetConfigSetting(Server,ControllerContext.HttpContext.Application);
+            var sysconfig = _settingService.GetConfigByKey(ConfigList.ConfigXMLPath);
+            var config = XMLHelper.ConvertXMLEntity<ConfigSetting>(sysconfig.ConfigXML);
+            
             string path = GetFilePath(config,tmf, filename);
             var helpers = new FileHelper();
             if (config.HostType == (int)HostType.SharePoint)
@@ -135,18 +170,37 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
                         SaveDocument(tmf, filename, file);
                     }
 
-                    _documentService.SaveDocument(tmf, CurUser.Id, CurUser.UserName);
+                    _documentService.SaveDocument(tmf, CurUser.Id, CurUser.UserName,true);
                 }
                 return Json(new { result = true  });
 
             }
             catch (Exception ex)
             {
-                return Json(new {result = false, ex = ex.Message });
+                return Json(new {result = false, message = ex.Message });
             }
 
         }
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetNotifyRules(int? studyId,int? countryId,int? siteId,int? tmfId, int page, int rows)
+        {
+            try
+            {
+                if(studyId.HasValue){
+                    var list = _documentService.GetNotifyRules(studyId, countryId, siteId, tmfId, page, rows);
+                    return Json(new { total = list.Total, rows = list.ResultRows });
+                }
+                
+                else
+                   return Json(new { total = 0, rows = new List<NotifyRuleViewModel>()});
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message);
+            }
 
+        }
 
         [LoginFilter]
         [HttpPost]
@@ -166,29 +220,39 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         [LoginFilter]
         public FileResult DownloadFile(string tmfilter)
         {
-            var config = FileHelper.GetConfigSetting(Server, HttpContext.Application);
+            Dictionary<string, byte[]> fileList = new Dictionary<string, byte[]>();
+            var systemconfig = _settingService.GetConfigByKey(ConfigList.ConfigXMLPath);
+            var config = XMLHelper.ConvertXMLEntity<ConfigSetting>(systemconfig.ConfigXML);
             try
             {
                 FileHelper helpers = new FileHelper();
-                byte[] temp;
-                var tmf = JsonConverter.Deserialize<TMFFilter>(tmfilter);
-                var filename = tmf.DocumentName + tmf.VersionId
-                    + Constant.Document_TypeSplitFlag + tmf.DocumentType;
-                string path = GetFilePath(config, tmf, filename);
-                if (config.HostType == (int)HostType.SharePoint)
-                {
-                    temp = helpers.DownloadWebServerFile(path, config);
+               
+                var tmfilters = JsonConverter.Deserialize<TMFFilter>(tmfilter);
+                var tmflist = _documentService.GetAllDocumentsByStudyId(CurUser.Id, tmfilters.Study);
+                foreach(var tmf in tmflist){
+                    byte[] temp;
+                    var filename = tmf.DocumentName + tmf.VersionId
+                  + Constant.Document_TypeSplitFlag + tmf.DocumentType;
+                    string path = GetFilePath(config, tmf, filename);
+                    temp= helpers. DownloadFile(path, config);
+                    if (fileList.Any(f => f.Key == path))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        fileList.Add(path, temp);
+                    }
+               
                 }
-                else
-                {
-                    temp = helpers.DownloadfromFileSystem(path);
-                }
-                var contenttype = Constant.ContentTypeLib[Constant.Document_ContentType_Other];
-                if (Constant.ContentTypeLib.Keys.Contains(tmf.DocumentType))
-                {
-                    contenttype = Constant.ContentTypeLib[tmf.DocumentType];
-                }
-                return File(temp, contenttype, filename);
+                
+                var targetPath=Server.MapPath("/TempFiles/"+tmfilters.StudyNum+".zip");
+             
+                  helpers.ZipFile(fileList, tmfilters.StudyNum, targetPath,config.HostType == (int)HostType.SharePoint);
+               var temps = helpers.DownloadfromFileSystem(targetPath);
+               var indexs=targetPath.Split('.');
+               var files = targetPath.Split('\\');
+               return File(temps, indexs[indexs.Length - 1], files[files.Length-1]);
             }
             catch (Exception ex)
             {
@@ -245,7 +309,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         public JsonResult GetPDFFile(string tmfilter)
         {
             var mapfolder="/TempFiles/";
-            var config = FileHelper.GetConfigSetting(Server, HttpContext.Application);
+            var systemconfig=_settingService.GetConfigByKey(ConfigList.ConfigXMLPath);
+            var config = XMLHelper.ConvertXMLEntity<ConfigSetting>(systemconfig.ConfigXML);
             try
             {
                 FileHelper helpers = new FileHelper();
@@ -297,20 +362,15 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         [LoginFilter]
         [HttpPost]
-        public JsonResult SaveDocument(string tmf)
+        public JsonResult SaveNotifyRules(string notifyRules)
         {
          
             try 
             {
-                if (tmf != null)
-                {
-                    EmailHelper.Current.LoadConfig(Server);
-                    List<TMFFilter> tmfs = JsonConverter.Deserialize<List<TMFFilter>>(tmf);
-                    tmfs.ForEach(tft =>
-                    {
-                        _documentService.SaveDocument(tft, CurUser.Id, CurUser.UserName);
-                    });
-                    
+                if (!string.IsNullOrEmpty(notifyRules))
+                { 
+                    List<NotifyRuleViewModel> tmfs = JsonConverter.Deserialize<List<NotifyRuleViewModel>>(notifyRules);
+                    _documentService.SaveNotifyRules(tmfs);
                 }
                 return Json(new { result = true });
 
@@ -318,6 +378,58 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             catch (Exception ex)
             {
                 return Json(new {result = false,  ex = ex.Message });
+            }
+
+        }
+
+
+
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult DeleteNotifyRules(string notifyRules)
+        {
+
+            try
+            {
+                if (!string.IsNullOrEmpty(notifyRules))
+                {
+                    List<NotifyRuleViewModel> tmfs = JsonConverter.Deserialize<List<NotifyRuleViewModel>>(notifyRules);
+                    _documentService.DeleteNotifyRules(tmfs);
+                }
+                return Json(new { result = true });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, ex = ex.Message });
+            }
+
+        }
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult SaveDocument(string tmf)
+        {
+
+            try
+            {
+                if (tmf != null)
+                {
+                    EmailHelper.Current.LoadConfig(Server);
+                    List<TMFFilter> tmfs = JsonConverter.Deserialize<List<TMFFilter>>(tmf);
+                    tmfs.ForEach(tft =>
+                    {
+                        _documentService.SaveDocument(tft, CurUser.Id, CurUser.UserName, false);
+                    });
+
+                }
+                return Json(new { result = true });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, ex = ex.Message });
             }
 
         }

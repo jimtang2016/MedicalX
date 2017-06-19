@@ -2,12 +2,76 @@
 /// <reference path="../jquery.easyui.min.js" />
 /// <reference path="../Common.js" />
 /// <reference path="StudyController.js" />
+/// <reference path="MileStone.js" />
+/// <reference path="NotifyRule.js" />
 
 
 com.DocumentController = function () {
 
     var self = {}
     self.CurrentTMF = {};
+    self.GetTopDocumentList = function () {
+        $.ajax(
+
+           {
+               url: "../../MasterData/StudyDocument/GetTopDocumentList",
+               data: { condition: self.CurrentTMF,top:10,type:0 },
+               type: 'POST',
+               success: function (data) {
+                   var chartobj = {
+                       chart: {
+                           type: 'bar'
+                       },
+                       title: {
+                           text: 'Top Reupload Document List'
+                       },
+                       xAxis: {
+                           categories: [],
+                           title: {
+                               text: null
+                           }
+                       },
+                       yAxis: {
+                           min: 0,
+                           title: {
+                               text: 'Reupload Count',
+                               align: 'high'
+                           },
+                           labels: {
+                               overflow: 'justify'
+                           }
+                       },
+
+                       plotOptions: {
+                           bar: {
+                               dataLabels: {
+                                   enabled: true
+                               }
+                           }
+                       },
+                       legend: {
+                           visible: false
+                       },
+                       credits: {
+                           enabled: false
+                       },
+                       series: []
+                   };
+                   var serie = {
+                       name: 'Reupload Count',
+                       data: []
+                   };
+                   $(data.list).each(function (i, item) {
+                       chartobj.xAxis.categories.push(item.Category);
+                       serie.data.push(item.Total);
+                   });
+                   chartobj.series.push(serie);
+                  
+                   com.common.ShowChart("chart_reupload", chartobj);
+               }
+           });
+    }
+
     self.initmembers = function () {
         var roleoptoin = {
             url: "../Study/GetOptionListByParentId/" + 1,
@@ -501,6 +565,8 @@ com.DocumentController = function () {
         $("#tmflist").tree("reload");
         self.loadtreedocs();
         self.LoadCharts();
+        self.GetTopDocumentList();
+       
     }
     self.LoadCharts = function () {
         $.ajax(
@@ -513,6 +579,9 @@ com.DocumentController = function () {
                     var uperctent = data.UploadSum.Done / data.UploadSum.Total*100;
                     var rpercent = data.ReviewSum.Done / data.ReviewSum.Total * 100;
                     var ipercent = data.IssueSum.Done / data.IssueSum.Total * 100;
+                    $("#chart_review").children().remove();
+                    $("#chart_upload").children().remove();
+                    $("#chart_Issued").children().remove();
                     $("#chart_review").circliful({ title: "Reviewed", percent: rpercent, foregroundColor: "green" });
                     $("#chart_Issued").circliful({ title: "Issueded", percent: ipercent, foregroundColor: "red" });
                     $("#chart_upload").circliful({ title: "Uploaded", percent: uperctent, foregroundColor: "blue" });
@@ -781,7 +850,6 @@ com.DocumentController = function () {
                 } else {
                     self.CurrentTMF.Operation = "Create";
                 }
-                self.CurrentTMF.Active = true;
             } else {
                 self.CurrentTMF = {
                     StudyNum: edititem.StudyNum,
@@ -796,10 +864,14 @@ com.DocumentController = function () {
                     VersionId: edititem.VersionId,
                     DocumentName: edititem.DocumentName,
                     DocumentType: edititem.DocumentType,
-                    DocumentId : edititem.Id
+                    DocumentId: edititem.Id
+                
                 };
             }
+        } else {
+            self.CurrentTMF.Operation = "Create";
         }
+        self.CurrentTMF.Active = true;
         if (self.CurrentTMF.DocumentId == null || self.CurrentTMF.DocumentId == undefined) {
             if (self.CurrentTMF.Site != null &&self.CurrentTMF.Site > 0) {
                 self.CurrentTMF.DocumentLevel = "Site";
@@ -1043,6 +1115,9 @@ com.DocumentController = function () {
                 return true;
             }
         });
+
+      
+        
         $("#groupform").form("load", self.CurrentTMF);
         doc_IsShareSites.checked = Boolean(self.CurrentTMF.IsSiteShared);
         doc_IsShareCountry.checked = Boolean(self.CurrentTMF.IsCountryShared);
@@ -1156,28 +1231,12 @@ com.DocumentController = function () {
             text: "Download",
             iconCls: 'icon-arow',
             handler: function () {
-                var filelist = $("#list_data").datagrid("getChecked");
-                $(filelist).each(function (i, item) {
-                    var temffilter = {
-                        StudyNum: item.StudyNum,
-                        CountryName: item.CountryName,
-                        Country: item.CountryId,
-                        SiteName: item.SiteName,
-                        Site: item.SiteId,
-                        ZoneNo: item.ZoneNo,
-                        SectionNo: item.SectionNo,
-                        ArticleNo: item.ArtifactNo,
-                        VersionId: item.VersionId,
-                        DocumentName: item.DocumentName,
-                        DocumentType: item.DocumentType
-                    }
-                    var title = "tmf_"+item.Id;
-                    $("#download_form").attr("target", title);
-                    $("#doc_download_file").val(JSON.stringify(temffilter));
-                    window.open("about:blank", title, "")
-                    $("#download_form").submit();
-                   
-                });
+                var title = "tmf_" +self.CurrentTMF.Study;
+                $("#download_form").attr("target", title);
+                $("#doc_download_file").val(JSON.stringify(self.CurrentTMF));
+                window.open("about:blank", title, "")
+                $("#download_form").submit();
+
             }
 
         }
@@ -1328,6 +1387,13 @@ com.DocumentController = function () {
         com.common.initqueryGrid("issuelog_list_data", "Issue Log", "ico-edit", "../../MasterData/StudyDocument/GetIssuelogs", { queryParams: { documentId: null } }, []);
 
     }
+    self.showMileStone=function(milestonetype){
+            com.MileStoneController.show("mileStone_data", self.CurrentTMF.Study, milestonetype > 0 ? self.CurrentTMF.Site : self.CurrentTMF.Country, milestonetype);
+    }
+
+    self.showNotifyRules = function () {
+        com.NotifyController.show( self.CurrentTMF, "notifyrule_data","notify_dialog");
+    }
     self.Load = function () {
         self.iniTreeList();
 
@@ -1335,21 +1401,17 @@ com.DocumentController = function () {
 
         self.initDocumentList();
         self.initDocumentHistoryList();
-        self.StudyService.InitReginalGrid();
-        self.StudyService.InitSitesGrid();
-        self.StudyService.InitTemplatesGrid();
-        self.StudyService.InitMemberGrid();
-        self.StudyService.InitComboBox();
+      
         self.initReviewForm();
         com.common.initqueryGrid("tmfcountryList", "Trial Country", 'icon-edit', '../Study/GetTrialRegionals', { id: 0 });
         com.common.initqueryGrid("alltemlate_data", "Trial Template Reference", 'icon-edit', '../Study/GetAllTemplates', { id: 0 });
         self.initUserDialog();
+        com.MileStoneController.init("mileStone_data");
+        com.NotifyController.init("notifyrule_data");
     }
     self.initReviewForm = function () {
         $("#btn_Review_doc").click(function () { self.SaveReveiwData(true); });
         $("#btn_reject_doc").click(function () { self.SaveReveiwData(false); });
-
-
     }
     self.Closedialog = function () {
         self.ClearCurrentTMF();
@@ -1398,6 +1460,7 @@ com.DocumentController = function () {
             self.CurrentTMF.ArticleName = data.ArticleName;
             self.CurrentTMF.ArticleNo = data.ArticleNo;
         }
+  
         self.CurrentTMF.SectionNo = data.SectionNo;
         self.CurrentTMF.TMFId = data.TMFId;
         self.CurrentTMF.StudyTemplateId = data.StudyTemplateId;

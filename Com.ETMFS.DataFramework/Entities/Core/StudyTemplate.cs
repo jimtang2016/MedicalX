@@ -13,12 +13,15 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     {
         ICollection<StudyDocument> _studydoc = null;
         ICollection<TemplateOutcluding> _templateOutcluding = null;
-        
+        ICollection<NotificationRules> _notificationRules = null;
         public StudyTemplate()
         {
             _studydoc = new HashSet<StudyDocument>();
             _templateOutcluding = new HashSet<TemplateOutcluding>();
+            ICollection<NotificationRules> _notificationRules = new List<NotificationRules>();
         }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public int StudyId { get; set; }
@@ -43,5 +46,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public virtual ICollection<StudyDocument> StudyDocument { get { return _studydoc; } }
 
         public virtual ICollection<TemplateOutcluding> TemplateOutcluding { get { return _templateOutcluding; } }
+
+        public virtual ICollection<NotificationRules> NotificationRules { get { return _notificationRules; } }
     }
 }

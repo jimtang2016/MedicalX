@@ -15,12 +15,17 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         ICollection<StudyTemplate> _studytemplate = null;
         ICollection<StudyMember> _studymember = null;
         ICollection<TrialRegional> _trialRegional = null;
+         ICollection<MileStone> _milestone;
+        
         public Study(){
             _studysite = new HashSet<StudySite>();
             _studytemplate = new HashSet<StudyTemplate>();
             _studymember = new HashSet<StudyMember>();
             _trialRegional = new HashSet<TrialRegional>();
+            _milestone = new List<MileStone>();
     }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { set; get; }
         [MaxLength(100)]
         public string StudyNum { set; get; }
@@ -47,6 +52,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public virtual ICollection<StudyMember> StudyMember { get { return _studymember; } }
 
         public virtual ICollection<TrialRegional> TrialRegional { get { return _trialRegional; } }
+
+        public virtual ICollection<MileStone> MileStones { get { return _milestone; } }
        
     }
 }

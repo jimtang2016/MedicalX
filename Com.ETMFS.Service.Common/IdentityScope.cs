@@ -28,10 +28,8 @@ namespace Com.ETMFS.Service.Common
                 return _context;
             }
         }
-        public void ConnectShareFolder(string path)
+        public void ConnectShareFolder(ConfigSetting config)
         {
-            var config = XMLHelper.GetXMLEntity<ConfigSetting>(path);
-        
             if (config!=null&&config.HostType == (int)HostType.ShareFolder)
             {
                 Process proc = new Process();

@@ -11,6 +11,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
     [Table("T_TemplateOutcluding")]
    public partial class TemplateOutcluding
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { set; get; }
         public int StudyTemplateId { set; get; }
 

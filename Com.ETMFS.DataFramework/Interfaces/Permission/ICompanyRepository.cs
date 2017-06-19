@@ -10,5 +10,6 @@ namespace Com.ETMFS.DataFramework.Interfaces
 {
     public interface    ICompanyRepository : IRepository<Company>
     {
+
     }
 }

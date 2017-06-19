@@ -412,6 +412,183 @@ namespace Com.ETMFS.Service.Core.Impls
  
     }
       #endregion
+ 
+    public bool SaveMileStones(int studyId, MileStoneType stoneType ,List<MileStoneViewModel> milestones)
+    {
+        var issucess = false;
+          
+        try
+        {
+            List<MileStone> list = new List<MileStone>();
+            var study = _studyRepos.GetById(studyId);
+            var firstitem=milestones.FirstOrDefault();
+          
+            dynamic site=null;
+            if (stoneType == MileStoneType.Country)
+            {
+                site = study.TrialRegional.FirstOrDefault(f => f.CountryId == firstitem.StudyCountryId);
+              
+            }
+            else if (stoneType == MileStoneType.Site)
+            {  
+                site=  study.StudySite.FirstOrDefault(f => f.SiteId == 
+                    firstitem.StudySiteId);
+            }
+            else
+            {
+                site = study;
+            }
+            list = site.MileStones;
+            var index = -1;
+            milestones.ForEach(fg =>
+            {
+                MileStone item = list.FirstOrDefault(f => f.Id == fg.Id);
+                if (item == null)
+                {
+                    item = new MileStone()
+                    {
+                        Title = fg.Title,
+                        Id=index
+                    };
+                  
+                    if (stoneType == MileStoneType.Country)
+                    {
+                        item.StudyCountryId = fg.StudyCountryId;
+                    }
+                    else if (stoneType == MileStoneType.Site)
+                    {
+                        item.StudySiteId = fg.StudySiteId;
+                    }
+                    else
+                    {
+                        item.StudyId = studyId;
+                    }
+
+                }
+                if (!string.IsNullOrEmpty(fg.PlanEndDate))
+                    item.PlanEndDate = DateTime.Parse(fg.PlanEndDate);
+                if (!string.IsNullOrEmpty(fg.PlanStartDate))
+                    item.PlanStartDate = DateTime.Parse(fg.PlanStartDate);
+                if (!string.IsNullOrEmpty(fg.ActualEndDate))
+                    item.ActualEndDate = DateTime.Parse(fg.ActualEndDate);
+                if (!string.IsNullOrEmpty(fg.ActualStartDate))
+                    item.ActualStartDate = DateTime.Parse(fg.ActualStartDate);
+                if (item.Id <= 0)
+                {
+                    if (site!=null)
+                    site.MileStones.Add(item);
+                }
+                index--;
+            });
+            _unitWork.Commit();
+            issucess = true;
+        }
+        catch  
+        {
+            throw;
+        }
+        return issucess;
+    }
+
+    public PageResult<MileStoneViewModel> GetMileStones(int studyId, int id, MileStoneType stoneType, int page, int rows)
+    {
+        var list = GetMileStones(studyId, id, stoneType);
+        PageResult<MileStoneViewModel> temp = new PageResult<MileStoneViewModel>()
+        {
+            PageSize=rows,
+            CurrentPage=rows,
+            ResultRows=list,
+            Total=list.Count
+        }; 
+       return temp;
+    }
+
+   public List<MileStoneViewModel> GetMileStones(int studyId, int id, MileStoneType stoneType)
+    {
+        var newtemplist = new List<OptionList>();
+        List<MileStone> list = new List<MileStone>();
+        var temp = new List<MileStoneViewModel>();
+        var study = _studyRepos.GetById(studyId);
+        if (stoneType == MileStoneType.Country)
+        {
+            list = study.TrialRegional.FirstOrDefault(f => f.CountryId == id).MileStones.ToList();
+            if (list.Count <= 0)
+            {
+                newtemplist = _optionlist.GetListByParentId(Constant.MileStone_Country).Where(f => f.ParentId.HasValue).ToList();
+                newtemplist.ForEach(f =>
+                {
+                    temp.Add(new MileStoneViewModel()
+                    {
+                        Title = f.ENText,
+                        StudyCountryId = id
+                    });
+                });
+            }
+            else
+            {
+                temp = list.Select(f => ConvertViewModel(f)).ToList();
+            }
+
+        }
+        else if (stoneType == MileStoneType.Site)
+        {
+            list = study.StudySite.FirstOrDefault(f => f.SiteId == id).MileStones.ToList();
+            if (list.Count <= 0)
+            {
+                newtemplist = _optionlist.GetListByParentId(Constant.MileStone_Site).Where(f => f.ParentId.HasValue).ToList();
+                newtemplist.ForEach(f =>
+                {
+                    temp.Add(new MileStoneViewModel()
+                    {
+                        Title = f.ENText,
+                        StudySiteId = id
+                    });
+                });
+            }
+            else
+            {
+                temp = list.Select(f => ConvertViewModel(f)).ToList();
+            }
+        }
+        else if (MileStoneType.Study == stoneType)
+        {
+            list = study.MileStones.ToList();
+            if (list.Count <= 0)
+            {
+                newtemplist = _optionlist.GetListByParentId(Constant.MileStone_Study).Where(f => f.ParentId.HasValue).ToList();
+                newtemplist.ForEach(f =>
+                {
+                    temp.Add(new MileStoneViewModel()
+                    {
+                        Title = f.ENText,
+                        StudySiteId = id
+                    });
+                });
+            }
+            else
+            {
+                temp = list.Select(f => ConvertViewModel(f)).ToList();
+            }
+        }
+        return temp;
+    }
+    
+    MileStoneViewModel ConvertViewModel(MileStone milestone)
+    {
+        MileStoneViewModel stone = new MileStoneViewModel();
+
+        stone.Id = milestone.Id;
+        stone.Title = milestone.Title;
+        if (milestone.ActualEndDate.HasValue)
+            stone.ActualEndDate = milestone.ActualEndDate.Value.ToString(Constant.Date_formatV1);
+        if (milestone.PlanEndDate.HasValue)
+            stone.PlanEndDate = milestone.PlanEndDate.Value.ToString(Constant.Date_formatV1);
+        if (milestone.ActualStartDate.HasValue)
+            stone.ActualStartDate = milestone.ActualStartDate.Value.ToString(Constant.Date_formatV1);
+        if (milestone.PlanStartDate.HasValue)
+            stone.PlanStartDate = milestone.PlanStartDate.Value.ToString(Constant.Date_formatV1);
+        return stone;
+    }
 
     public List<TmfNote> GetStudyListView(int p)
     {

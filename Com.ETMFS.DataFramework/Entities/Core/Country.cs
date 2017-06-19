@@ -17,6 +17,7 @@ namespace Com.ETMFS.DataFramework.Entities.Core
             _trialRegional = new HashSet<TrialRegional>();
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { set; get; }
         [MaxLength(100)]
         public string CountryName { set; get; }

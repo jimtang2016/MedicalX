@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Com.ETMFS.BusinesService.Interfaces;
 using Com.ETMFS.DataFramework.Entities.Core;
+using Com.ETMFS.DataFramework.Interfaces.Settings;
 using Com.ETMFS.Service.Common;
 using Com.ETMFS.Service.Core.Interfaces;
 using Com.ETMFS.Service.Core.ViewModel;
@@ -17,12 +18,14 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
         IUserService _userService;
         ICountryService _countryService;
         ITMFReferenceService _tmfservice;
-        public StudyController(IStudyService studyContext,IUserService userService,ICountryService countryService,ITMFReferenceService tmfservice )
+        ISystemSettingRepository _settingService;
+        public StudyController(IStudyService studyContext, IUserService userService, ICountryService countryService, ITMFReferenceService tmfservice, ISystemSettingRepository settingService)
         {  
             _studyContext = studyContext;
             _userService = userService;
             _countryService = countryService;
             _tmfservice = tmfservice;
+            _settingService = settingService;
         }
         // GET: MasterData/Study
         [LoginFilter]
@@ -38,6 +41,74 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
             return Json(new { total = users.Total, rows = users.ResultRows });
         }
 
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetMileStones(int? studyId, int? id,int? stonetype, int page, int rows)
+        {
+            try
+            {
+                if (studyId.HasValue)
+                {
+                    var type = (MileStoneType)stonetype;
+                    if (!id.HasValue) id = 0;
+                    var templates = _studyContext.GetMileStones(studyId.Value, id.Value, type, page, rows);
+                    return Json(new { total = templates.Total, rows = templates.ResultRows });
+                }
+                else
+                {
+                    return Json(new { total = 0, rows = string.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false,message=ex.Message.ToString() });
+            }
+           
+           
+        }
+
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult GetMileStoneView(int? studyId, int? id, int? stonetype)
+        {
+            try
+            {
+                if (studyId.HasValue)
+                {
+                    var type = (MileStoneType)stonetype;
+                    if (!id.HasValue) id = 0;
+                    var templates = _studyContext.GetMileStones(studyId.Value, id.Value, type).Where(fg=>fg.Id>0).ToList();
+                    return Json(templates);
+                }
+                else
+                {
+                    return Json(new { total = 0, rows = string.Empty });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message.ToString() });
+            }
+
+
+        }
+        [LoginFilter]
+        [HttpPost]
+        public JsonResult SaveMileStones(int? studyId,int stonetype, string datas)
+        {
+            try{
+                var milestones = JsonConverter.Deserialize<List<MileStoneViewModel>>(datas);
+                var type=(MileStoneType)stonetype;
+                _studyContext.SaveMileStones(studyId.Value, type, milestones);
+                return Json(new { result = true });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
         [LoginFilter]
         [HttpPost]
@@ -309,7 +380,8 @@ namespace Com.ETMFS.Areas.MasterData.Controllers
 
         void MappingFolder(int? studyId)
         {
-            var config = FileHelper.GetConfigSetting(Server, ControllerContext.HttpContext.Application);
+            var sysconfig = _settingService.GetConfigByKey(ConfigList.ConfigXMLPath);
+            var config = XMLHelper.ConvertXMLEntity<ConfigSetting>(sysconfig.ConfigXML);
             _studyContext.MappingFolders(config, studyId);
         }
         [LoginFilter]

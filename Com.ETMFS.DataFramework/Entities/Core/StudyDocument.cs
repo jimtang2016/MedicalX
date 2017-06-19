@@ -19,7 +19,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
             studydocument = new List<StudyDocumentHistory>();
             _issuelogs = new List<IssueLog>();
         }
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int StudyTemplateId { get; set; }
         [StringLength(500)]
@@ -60,7 +61,9 @@ namespace Com.ETMFS.DataFramework.Entities.Core
         public string SharedSiteIds { get; set; }
         public string SharedSiteNames { get; set; }
         public string TMFType { get; set; }
-        public StudyTemplate StudyTemplate { get; set; }
+        public int? ReuploadCount { get; set; }
+        
+        public virtual StudyTemplate StudyTemplate { get; set; }
 
         public virtual ICollection<StudyDocumentHistory> StudyDocumentHistory { get { return studydocument; } }
         public virtual ICollection<IssueLog> IssueLogs { get { return _issuelogs; } }

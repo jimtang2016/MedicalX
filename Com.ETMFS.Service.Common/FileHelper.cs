@@ -11,10 +11,187 @@ using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using PPT = Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Office.Core;
+using ICSharpCode.SharpZipLib.Zip;
 namespace Com.ETMFS.Service.Common
 {
     public class FileHelper
     {
+        public bool ZipFile(string srcdir, string target)
+        {
+            if (string.IsNullOrEmpty(srcdir))
+            {
+                throw new Exception("folder is null ");
+            }
+            if (!Directory.Exists(srcdir))
+            {
+                throw new Exception("the path is not existed");
+            }
+            try
+            {
+                var filenames = GetFileNames(srcdir);
+                var dirs = srcdir.Split('\\');
+                var baseindex = srcdir.IndexOf(dirs[dirs.Length - 1]);
+                using (FileStream basestream = new FileStream(target, FileMode.OpenOrCreate))
+                {
+                    using (ZipOutputStream stream = new ZipOutputStream(basestream))
+                    {
+                        stream.SetLevel(9);
+                        byte[] buffer = new byte[4096];
+                        foreach (var file in filenames)
+                        {
+                            ZipEntry zipfile = new ZipEntry(file.Substring(baseindex, file.Length - baseindex));
+                            zipfile.DateTime = DateTime.Now;
+                            stream.PutNextEntry(zipfile);
+                            using (FileStream filestr = System.IO.File.OpenRead(file))
+                            {
+                                int sourceIndex=0;
+                                do
+                                {
+                                   sourceIndex= filestr.Read(buffer, 0, buffer.Length);
+                                    stream.Write(buffer, 0, buffer.Length);
+                                } while (sourceIndex > 0);
+                            }
+                        }
+                        stream.Finish();
+                        stream.Close();
+                    }
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return true;
+        }
+
+        public bool ZipFile(Dictionary<string, byte[]> list, string rootfolder,  string target,bool isWebServer=false)
+        {
+            
+            try
+            {
+                char sourceFlag ,targetFlag;
+                sourceFlag = targetFlag = '\\';
+                if (isWebServer)
+                {
+                    sourceFlag = '/';
+                }
+                
+                    using (FileStream basestream = new FileStream(target, FileMode.OpenOrCreate))
+                    {
+                        using (ZipOutputStream stream = new ZipOutputStream(basestream))
+                        {
+                            stream.SetLevel(9);
+
+
+                            foreach (var file in list)
+                            {
+                                var srcdir = file.Key;
+                                var dirs = srcdir.Split(sourceFlag);
+                                var baseindex = srcdir.IndexOf(rootfolder);
+                                ZipEntry zipfile = new ZipEntry(srcdir.Substring(baseindex, srcdir.Length - baseindex).Replace(sourceFlag, targetFlag));
+                                zipfile.DateTime = DateTime.Now;
+                                stream.PutNextEntry(zipfile);
+
+                                stream.Write(file.Value, 0, file.Value.Length);
+                            }
+                           
+                            stream.Finish();
+                            stream.Close();
+                        }
+                    }
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return true;
+        }
+
+
+        public List<string> GetFileNames(string srcdir )
+        {
+            List<string> templist = new List<string>();
+            var folders = System.IO.Directory.GetDirectories(srcdir);
+            templist.AddRange(System.IO.Directory.GetFiles(srcdir));
+            if (folders != null)
+            {
+                foreach (var folder in folders)
+                {
+                    templist.AddRange(GetFileNames(folder));
+                }
+            }
+            return templist;
+            
+        }
+        public void UnZipFiles(string  src, string target)
+        {
+            var filesplit = "\\";
+            if (string.IsNullOrEmpty(src))
+            {
+                throw new Exception("folder is null ");
+            }
+            if (Directory.Exists(src))
+            {
+                throw new Exception("the path is not existed");
+            }
+            if (string.IsNullOrEmpty(target))
+            {
+                target = src.Replace(Path.GetFileName(src), Path.GetFileNameWithoutExtension(src));
+            }
+            if (!target.EndsWith(filesplit))
+            {
+                target = target + filesplit;
+            }
+            if (!Directory.Exists(target))
+            {
+                Directory.CreateDirectory(target);
+            }
+
+            try
+            {
+                using (var file = new ZipInputStream(System.IO.File.OpenRead(src)))
+                {
+                    ZipEntry inputenty = null;
+                    while ((inputenty = file.GetNextEntry())!=null)
+                    {
+                        string dirctname = Path.GetDirectoryName(inputenty.Name);
+                        string filename = Path.GetFileName(inputenty.Name);
+                        if (dirctname.Length > 0)
+                        {
+                            Directory.CreateDirectory(target + dirctname);
+                            if (!dirctname.EndsWith(filesplit))
+                            {
+                                dirctname = dirctname + filesplit;
+                            }
+                            if (!string.IsNullOrEmpty(filename))
+                            {
+                                using (FileStream writer = System.IO.File.Create(target + inputenty.Name))
+                                {
+                                    int size = 4096;
+                                    byte[] buffer = new byte[size];
+                                    while(true){
+                                        size = file.Read(buffer, 0, buffer.Length);
+                                        if(size>0)
+                                        writer.Write(buffer, 0, size);
+                                        else 
+                                            break;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public void UploadtoFileSystem(string path, HttpPostedFileBase file)
         {
             file.SaveAs(path);
@@ -52,6 +229,21 @@ namespace Com.ETMFS.Service.Common
 
             }
         }
+        public byte[] DownloadFile(string path, ConfigSetting config)
+        {
+            byte[] temp;
+            if (!Directory.Exists(path)) return new byte[0];
+            if (config.HostType == (int)HostType.SharePoint)
+            {
+                temp = DownloadWebServerFile(path, config);
+            }
+            else
+            {
+                temp = DownloadfromFileSystem(path);
+            }
+            return temp;
+        }
+
         public byte[] DownloadWebServerFile(string path, ConfigSetting config)
         {
             byte[] folder = null;
@@ -201,15 +393,12 @@ namespace Com.ETMFS.Service.Common
             }
 
         }
-        public static ConfigSetting GetConfigSetting(HttpServerUtilityBase Server, HttpApplicationStateBase  Application)
+        public static ConfigSetting GetConfigSetting(HttpServerUtilityBase Server, ConfigSetting config)
         {
-            var config = Application["ConfigSetting"] as ConfigSetting;
             if (config == null)
             {
-                IdentityScope.Context.ConnectShareFolder(Server.MapPath(ConfigList.ConfigXMLPath));
+                IdentityScope.Context.ConnectShareFolder(config);
                 Constant.InitContentLib();
-                config = XMLHelper.GetXMLEntity<ConfigSetting>(Server.MapPath(ConfigList.ConfigXMLPath));
-                Application.Add("ConfigSetting", config);
             }
             return config;
         }

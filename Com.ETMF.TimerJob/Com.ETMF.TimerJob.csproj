@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F887F1D5-9AC7-46CB-89E1-83B3261DF45A}</ProjectGuid>
+    <ProjectGuid>{905999FD-DB9A-4706-B59F-6B34EE682DC1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ETMFDemo</RootNamespace>
-    <AssemblyName>ETMFDemo</AssemblyName>
+    <RootNamespace>Com.ETMF.TimerJob</RootNamespace>
+    <AssemblyName>Com.ETMF.TimerJob</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,6 +30,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -66,71 +69,45 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataReaderExtensions.cs" />
-    <Compile Include="EPModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EPModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EPModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EPModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EPModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EPModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="ObjectContextExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="T_HCPInfo.cs">
-      <DependentUpon>EPModel.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <EntityDeploy Include="EPModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EPModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="EPModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EPModel.edmx</DependentUpon>
-      <LastGenOutput>EPModel.Context.cs</LastGenOutput>
-    </None>
-    <None Include="EPModel.edmx.diagram">
-      <DependentUpon>EPModel.edmx</DependentUpon>
-    </None>
-    <None Include="EPModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EPModel.edmx</DependentUpon>
-      <LastGenOutput>EPModel.cs</LastGenOutput>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Com.ETMFS.BusinesService\Com.ETMFS.Service.Permission.csproj">
+      <Project>{85f1d88c-cbf0-4fe9-809e-c6f6da8980b6}</Project>
+      <Name>Com.ETMFS.Service.Permission</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Com.ETMFS.DataFramework\Com.ETMFS.DataFramework.csproj">
+      <Project>{d9a52cd0-b2dd-43f5-89fc-025196035a41}</Project>
+      <Name>Com.ETMFS.DataFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Com.ETMFS.Service.Common\Com.ETMFS.Service.Common.csproj">
       <Project>{83c7b139-1e6a-4366-8080-1f2c13af4ad8}</Project>
       <Name>Com.ETMFS.Service.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Com.ETMFS.Service.Core\Com.ETMFS.Service.Core.csproj">
+      <Project>{9f63a713-b0d3-4541-ba21-e148fcf6f177}</Project>
+      <Name>Com.ETMFS.Service.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

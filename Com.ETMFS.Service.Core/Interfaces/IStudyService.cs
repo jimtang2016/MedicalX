@@ -11,20 +11,30 @@ using Com.ETMFS.Service.Core.ViewModel;
 
 namespace Com.ETMFS.Service.Core.Interfaces
 {
+   public enum MileStoneType{
+        Country,
+        Site,
+       Study
+    }
    public interface IStudyService
     {
+
        PageResult<StudyViewModel> GetStudyList(int page, int rows);
+
        int SaveStudyList(StudyViewModel studyv, string operationId);
+
        void DeleteStudyList(List<StudyViewModel> studylist, string operationId);
 
        PageResult<TrialReginalViewModel> GetTrialRegionals(int id,int page,int rows);
 
        void SaveTrialRegional(TrialReginalViewModel trialReg, string op);
+
        void RemoveRegionals(List<TrialReginalViewModel> trialRegs, string op);
 
        PageResult<MemberViewModel> GetStudyMembers(int id, int page, int rows, int? countryId, int? siteId);
 
        List<TrialReginalViewModel> GetTrialRegionals(int id,int p);
+
        List<OptionList> GetOptionListByParentId(int parentId);
 
        List<TmfNote> GetStudyListView(int p);
@@ -49,8 +59,6 @@ namespace Com.ETMFS.Service.Core.Interfaces
 
        PermissionViewModel GetPermission(TMFFilter filter,int p);
 
-
-
        List<TMFRefernceOptionViewModel> GetTrialTempaltes(TMFFilter condition);
 
          List<TrialReginalViewModel> GetTrialRegionals(int id);
@@ -58,5 +66,11 @@ namespace Com.ETMFS.Service.Core.Interfaces
          List<SiteViewModel> GetStudySites(int id);
 
          PageResult<TMFRefernceOptionViewModel> GetOutCountryTMFModels(int id, int countryId, int page, int rows);
+
+         PageResult<MileStoneViewModel> GetMileStones(int studyId, int id, MileStoneType stoneType, int page, int rows);
+
+         bool SaveMileStones(int studyId, MileStoneType stoneType, List<MileStoneViewModel> milestones);
+
+         List<MileStoneViewModel> GetMileStones(int p1, int p2, MileStoneType type);
     }
 }

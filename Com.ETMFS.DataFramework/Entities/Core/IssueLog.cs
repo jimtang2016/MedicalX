@@ -18,8 +18,8 @@ namespace Com.ETMFS.DataFramework.Entities.Core
              _assignUsers = new HashSet<AssignedUser>();
          }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-   
         public string Reason { get; set; }
         public int? DocumentId { get; set; }
         public int? ReviewerId { get; set; }

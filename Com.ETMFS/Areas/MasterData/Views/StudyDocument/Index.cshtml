@@ -29,14 +29,29 @@
                 }
             } else if (items.indexOf("tmf") > -1) {
                 if (items.indexOf("remove") > -1) {
-                    sefl.RemoveTMFModels();
-                } else {
+                    if (items.indexOf("county") > -1) {
+                        sefl.EditTMFModels(true);
+                    } else {
+                        sefl.RemoveTMFModels();
+                    }
                     
-                    sefl.EditTMFModels(items.indexOf("county")>-1);
-                }
+                } else if (items.indexOf("notify")) {
+                    
+                    sefl.showNotifyRules();
+                }   
             } else if (items.indexOf("user") > -1) {
                 var strs = items.split("_");
                 sefl.EditUserInfos(strs[1]);   
+            } else if (items.indexOf("milestone") > -1) {
+                var milestonetype;
+                if (items.indexOf("Country") > -1) {
+                    milestonetype = 0;
+                }else if (items.indexOf("Site") > -1) {
+                    milestonetype = 1;
+                } else if (items.indexOf("Study") > -1) {
+                    milestonetype = 2;
+                }
+                sefl.showMileStone(milestonetype);
             }
         });
     })
@@ -177,6 +192,9 @@
     <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Study">
         User Management
     </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="milestonemenu_Study">
+        Mile Stone
+    </div>
 </div>
 <div id="countrymenu" class="easyui-menu docstyle">
 
@@ -195,6 +213,9 @@
     <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Country">
         User Management
     </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="milestonemenu_Country">
+        Mile Stone
+    </div>
 </div>
 <div id="sitemenu" class="easyui-menu docstyle">
 
@@ -207,12 +228,17 @@
     <div data-options="iconCls:'icon-edit'" class="menuitems" id="usermenu_Site">
         User Management
     </div>
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="milestonemenu_Site">
+        Mile Stone
+    </div>
 </div>
 <div id="tmfmenu" class="easyui-menu docstyle">
     <div data-options="iconCls:'icon-remove'" class="menuitems" id="tmfmenu_remove">
         Remove Trial Model Reference
     </div>
-
+    <div data-options="iconCls:'icon-edit'" class="menuitems" id="tmfmenu_notify">
+        Edit Notification rule
+    </div>
 </div>
 <div id="tmfcountryList_dialog" class="common-dialog" data-options="iconCls:'icon-save'">
     <table id="tmfcountryList">
@@ -514,7 +540,9 @@
         </thead>
     </table>
 </div>
-
+  @Html.Partial("_MileStoneView")  
+@Html.Partial("_NotifyRuleView")
+  
 <div style="display:none">
     <form id="download_form" action="../../MasterData/StudyDocument/DownloadFile"    method="post" >
         <input type="hidden" id="doc_download_file" name="tmfilter" />

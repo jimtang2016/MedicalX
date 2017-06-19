@@ -539,8 +539,10 @@
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\MasterData\Country.js" />
     <Content Include="Scripts\MasterData\DocumentController.js" />
+    <Content Include="Scripts\MasterData\NotifyRule.js" />
     <Content Include="Scripts\MasterData\StudyController.js" />
     <Content Include="Scripts\MasterData\TMFModel.js" />
+    <Content Include="Scripts\MasterData\MileStone.js" />
     <Content Include="Scripts\Permission\AccountJs.js" />
     <Content Include="Scripts\Permission\AppConfigSetting.js" />
     <Content Include="Scripts\Permission\Group.js" />
@@ -584,6 +586,8 @@
     <Content Include="Areas\Permission\Views\Config\Index.cshtml" />
     <Content Include="Areas\MasterData\Views\StudyDocument\Index.cshtml" />
     <Content Include="Areas\MasterData\Views\Shared\_StudyPartialView.cshtml" />
+    <Content Include="Areas\MasterData\Views\Shared\_MileStoneView.cshtml" />
+    <Content Include="Areas\MasterData\Views\Shared\_NotifyRuleView.cshtml" />
     <None Include="Project_Readme.html" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\knockout-3.4.0.js" />

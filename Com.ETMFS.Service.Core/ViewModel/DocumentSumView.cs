@@ -10,5 +10,6 @@ namespace Com.ETMFS.Service.Core.ViewModel
     {
       public int Total { get; set; }
       public int Done { get; set; }
+      public string Category { get; set; }
     }
 }

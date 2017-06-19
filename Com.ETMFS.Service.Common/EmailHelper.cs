@@ -19,14 +19,23 @@ namespace Com.ETMFS.Service.Common
        }
        public  void LoadConfig  (HttpServerUtilityBase Server)
         {
-            lock (_helper)
-            {
-                if (EmailConfig == null)
+              if (EmailConfig == null)
                 {
                     var path = Server.MapPath(ConfigList.EmailConfigXMLPath);
-                    EmailConfig = XMLHelper.GetXMLEntity<EmailConfig>(path);
+                    LoadConfig(path);
                 }
-            }
+       }
+
+       public void LoadConfig(string path)
+       {
+           lock (_helper)
+           {
+               if (EmailConfig == null)
+               {
+                 
+                   EmailConfig = XMLHelper.GetXMLEntity<EmailConfig>(path);
+               }
+           }
        }
        public static EmailHelper Current
        {

@@ -64,6 +64,8 @@
     <Compile Include="Entities\Core\Country.cs" />
     <Compile Include="Entities\Core\DocumentView.cs" />
     <Compile Include="Entities\Core\IssueLog.cs" />
+    <Compile Include="Entities\Core\MileStone.cs" />
+    <Compile Include="Entities\Core\NotificationRules.cs" />
     <Compile Include="Entities\Core\Site.cs" />
     <Compile Include="Entities\Core\Study.cs" />
     <Compile Include="Entities\Core\StudyDocument.cs" />
@@ -83,13 +85,17 @@
     <Compile Include="Entities\Permission\OptionList.cs" />
     <Compile Include="Entities\Permission\UserGroups.cs" />
     <Compile Include="Entities\Permission\Users.cs" />
+    <Compile Include="Entities\Settings\SystemConfig.cs" />
     <Compile Include="Impls\Core\CountryRepository.cs" />
     <Compile Include="Impls\Core\IssuelogRepository.cs" />
+    <Compile Include="Impls\Core\NotifyRulesRepository.cs" />
     <Compile Include="Impls\Core\StudyRepository.cs" />
     <Compile Include="Impls\Core\TMFTemplateRepository.cs" />
+    <Compile Include="Impls\Settings\SystemSettingRepository.cs" />
     <Compile Include="Interfaces\Core\ICountryRepository.cs" />
     <Compile Include="Interfaces\Core\IDocumentRepository.cs" />
     <Compile Include="Interfaces\Core\IIssuelogRepository.cs" />
+    <Compile Include="Interfaces\Core\INotifyRulesRepository.cs" />
     <Compile Include="Interfaces\Core\IStudyRepository.cs" />
     <Compile Include="Interfaces\Core\ITMFTemplateRepository.cs" />
     <Compile Include="Impls\Core\OptionListRepository.cs" />
@@ -106,8 +112,10 @@
     <Compile Include="Interfaces\Permission\ILoginHistoryRepository.cs" />
     <Compile Include="Interfaces\Permission\IUserGroupsRepository.cs" />
     <Compile Include="Interfaces\Permission\IUsersRepository.cs" />
+    <Compile Include="Interfaces\Settings\ISystemSettingRepository.cs" />
     <Compile Include="PageResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\NotifyReminderView.cs" />
     <Compile Include="View\StudyListView.cs" />
     <Compile Include="View\TrialReginalView.cs" />
   </ItemGroup>

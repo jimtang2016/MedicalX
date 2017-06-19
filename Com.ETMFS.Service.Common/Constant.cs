@@ -18,9 +18,13 @@ namespace Com.ETMFS.Service.Common
        public static readonly string RoleLevel_Site = "Site";
        public static readonly string RoleLevel_Trial = "Study";
        public static readonly string Date_format = "yyyy-MM-dd HH:mm:ss";
+       public static readonly string Date_formatV1 = "yyyy-MM-dd";
        public static readonly int Group_Administrators = 1;
        public static readonly int Group_Uploaders = 7;
        public static readonly int Group_Reviewers = 8;
+       public static readonly int MileStone_Country = 31;
+       public static readonly int MileStone_Site = 35;
+       public static readonly int MileStone_Study = 39;
        public static readonly string Group_Split_Flag="{0}|{1}|{2}";
        public static readonly string TMF_BelongFlag = "X";
        public static readonly string TMF_Issued = "Issued";

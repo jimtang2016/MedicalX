@@ -18,6 +18,8 @@ com.AccountController = function () {
                     } else {
                         location.href = "../../Masterdata/StudyDocument/";
                     }
+                } else {
+                    alert("username/password invalid");
                 }
                
               

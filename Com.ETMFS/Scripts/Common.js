@@ -35,6 +35,47 @@ $.extend($.fn.form.methods, {
     }
 });
 
+$.extend(
+    $.fn.datagrid.defaults.editors, {
+        datebox: {
+            init: function (container, options) {
+                var input = $('<input type="text">').appendTo(container);
+                input.datebox(options);
+                return input;
+            },
+            destroy: function (target) {
+                $(target).datebox('destroy');
+            },
+            getValue: function (target) {
+                return $(target).datebox('getValue');
+            },
+            setValue: function (target, value) {
+                $(target).datebox('setValue',  value);
+            },
+            resize: function (target, width) {
+                $(target).datebox('resize', width);
+            }
+        },
+        datetimebox: {
+            init: function (container, options) {
+                var input = $('<input type="text">').appendTo(container);
+                input.datetimebox(options);
+                return input;
+            },
+            destroy: function (target) {
+                $(target).datetimebox('destroy');
+            },
+            getValue: function (target) {
+                return $(target).datetimebox('getValue');
+            },
+            setValue: function (target, value) {
+                $(target).datetimebox('setValue',  value);
+            },
+            resize: function (target, width) {
+                $(target).datetimebox('resize', width);
+            }
+        }
+    });
 String.prototype.FormatDate = function () {
     var temp = "";
     if (this != null && this != undefined && this != "") {
@@ -59,6 +100,7 @@ String.prototype.FormatDate = function () {
     return temp;
 }
 
+ 
 String.prototype.FormatMinutsDate = function () {
     var temp = "";
     if (this != null && this != undefined && this != "") {
@@ -222,6 +264,13 @@ com.common = {
         $("#" + el).dialog('close');
     }
 ,
+
+    FinishEdit: function (el) {
+        var el = "#" + el;
+        var datas = $(el).datagrid("getSelected");
+        var rowindex = $(el).datagrid("getRowIndex", datas);
+        $(el).datagrid('endEdit', rowindex);
+    },
     showFunCategory: function (categroy) {
         var list = $(".panel-body .accordion-body");
         for (var i = 0; i < list.length; i++) {
@@ -276,7 +325,7 @@ com.common = {
             }],
         });
         //设置分页控件 
-        var p = $('#list_data').datagrid('getPager');
+        var p = $('#' + el).datagrid('getPager');
         $(p).pagination({
             pageSize: 10,//每页显示的记录条数，默认为10 
             pageList: [5, 10, 15]//可以设置每页记录条数的列表 
@@ -309,7 +358,7 @@ com.common = {
             toolbar: tooltip,
         });
         //设置分页控件 
-        var p = $('#list_data').datagrid('getPager');
+        var p = $('#' + el).datagrid('getPager');
         $(p).pagination({
             pageSize: 10,//每页显示的记录条数，默认为10 
             pageList: [5, 10, 15]//可以设置每页记录条数的列表 
@@ -345,7 +394,7 @@ com.common = {
             toolbar: tooltip,
         });
         //设置分页控件 
-        var p = $('#list_data').datagrid('getPager');
+        var p = $('#' + el).datagrid('getPager');
         $(p).pagination({
             pageSize: 10,//每页显示的记录条数，默认为10 
             pageList: [5, 10, 15]//可以设置每页记录条数的列表 
@@ -354,4 +403,54 @@ com.common = {
         });
 
     }
+    ,
+
+    initEditGrid: function (el, title, ico, url, tooltip) {
+        var editRow = undefined;
+    $('#' + el).datagrid({
+        title: title,
+        iconCls: ico,//图标 
+        width: 'auto',
+        height: 'auto',
+        nowrap: false,
+        striped: true,
+        border: true,
+        collapsible: false,//是否可折叠的 
+        url: url,
+        method: 'post', 
+        remoteSort: false,
+        idField: 'Id',
+        singleSelect: true,//是否单选 
+        pagination: true,//分页控件 
+        rownumbers: true,//行号 
+        toolbar: tooltip,
+        onAfterEdit: function (rowIndex, rowData, changes) {
+            editRow = undefined;
+        },
+        onDblClickRow: function (rowIndex, rowData) {
+            if (editRow != undefined) {
+                $("#" + el).datagrid('endEdit', editRow);
+            }
+
+            if (editRow == undefined) {
+                $("#" + el).datagrid('beginEdit', rowIndex);
+                editRow = rowIndex;
+            }
+        },
+        onClickRow: function (rowIndex, rowData) {
+            if (editRow != undefined) {
+                $("#" + el).datagrid('endEdit', editRow);
+                editRow = undefined;
+            }  
+
+        } 
+    });
+        //设置分页控件 
+    var p = $('#' + el).datagrid('getPager');
+    $(p).pagination({
+        pageSize: 50,//每页显示的记录条数，默认为10 
+        pageList: [5, 10, 15,50]//可以设置每页记录条数的列表 
+    });
+
+}
 }

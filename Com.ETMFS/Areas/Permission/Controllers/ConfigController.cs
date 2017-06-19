@@ -10,9 +10,11 @@ namespace Com.ETMFS.Areas.Permission.Controllers
     public class ConfigController : BaseController
     {
         IStudyService _studyService;
-        public ConfigController(IStudyService studyService)
+        ISystemSettingService _settingService;
+        public ConfigController(IStudyService studyService, ISystemSettingService settingService)
         {
             _studyService = studyService;
+            _settingService = settingService;
         }
         // GET: Permission/Config
          [LoginFilter]
@@ -27,8 +29,8 @@ namespace Com.ETMFS.Areas.Permission.Controllers
         {
             try
             {
-                var path = this.Server.MapPath(ConfigList.ConfigXMLPath);
-                var config = XMLHelper.GetXMLEntity<ConfigSetting>(path);
+                var xmlentity = _settingService.GetConfig(ConfigList.ConfigXMLPath);
+                var config = XMLHelper.ConvertXMLEntity<ConfigSetting>(xmlentity.ConfigXML);
                 if (config == null)
                 {
                     config = new ConfigSetting();
@@ -46,8 +48,8 @@ namespace Com.ETMFS.Areas.Permission.Controllers
          {
              try
              {
-                 var path = this.Server.MapPath(ConfigList.EmailConfigXMLPath);
-                 var config = XMLHelper.GetXMLEntity<EmailConfig>(path);
+                 var xmlentity = _settingService.GetConfig(ConfigList.EmailConfigXMLPath);
+                 var config = XMLHelper.ConvertXMLEntity<EmailConfig>(xmlentity.ConfigXML);
                  if (config == null)
                  {
                      config = new EmailConfig();
@@ -85,9 +87,10 @@ namespace Com.ETMFS.Areas.Permission.Controllers
         public JsonResult SaveConfig(ConfigSetting config)
         {
             try{
-             var path= this.Server.MapPath(ConfigList.ConfigXMLPath);
-             XMLHelper.SaveXMLEntity<ConfigSetting>(path, config);
-             IdentityScope.Context.ConnectShareFolder(path);
+             var xml= XMLHelper.ConvertEntityXML<ConfigSetting>(config);
+             var isdone = _settingService.SaveConfig(ConfigList.ConfigXMLPath, xml);
+              if(isdone)
+             IdentityScope.Context.ConnectShareFolder(config);
             return Json(new { Result = true });
             }
             catch (Exception ex)
@@ -99,9 +102,9 @@ namespace Com.ETMFS.Areas.Permission.Controllers
         public JsonResult SaveEmailConfig(EmailConfig config)
         {
             try
-            {
-                var path = this.Server.MapPath(ConfigList.EmailConfigXMLPath);
-                XMLHelper.SaveXMLEntity<EmailConfig>(path, config);
+            { 
+                 var xml= XMLHelper.ConvertEntityXML<EmailConfig>(config);
+                 var isdone = _settingService.SaveConfig(ConfigList.EmailConfigXMLPath, xml);
                 return Json(new { Result = true });
             }
             catch (Exception ex)
